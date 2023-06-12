@@ -1,0 +1,10 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100dvh;
+    background-color: rgb(50, 50, 50);
+}
