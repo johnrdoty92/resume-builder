@@ -1,9 +1,24 @@
 import { useSprings, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import classes from "./DragAndDrop.module.css";
-import { useRef } from "react";
 
 const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
+
+const calculatePosition = <T extends { node: HTMLElement }>(
+  node: Node,
+  index: number,
+  accumulator: T[],
+  targetKey: keyof T
+) => {
+  if (index === 0) {
+    assertHTMLElement(node.parentElement);
+    return node.parentElement.getBoundingClientRect().top;
+  } else {
+    const prev = accumulator[index - 1];
+    const { height } = prev.node.getBoundingClientRect();
+    return (prev[targetKey] as number) + height;
+  }
+};
 
 function assertHTMLElement(element: unknown): asserts element is HTMLElement {
   if (!(element instanceof HTMLElement))
@@ -26,42 +41,22 @@ const getNodePositions = (target: EventTarget) => {
   if (!target.parentElement) throw "No parent on dragged element";
 
   const nodePositions = Array.from(target.parentElement.childNodes)
+    // Save each node's originating y position
     .reduce<NodeOriginData[]>((acc, node, i) => {
       assertHTMLElement(node);
-      let originY: number;
-      // If it's the first node, origin is just the top of the parent element
-      if (i === 0) {
-        assertHTMLElement(node.parentElement);
-        originY = node.parentElement.getBoundingClientRect().top;
-      } else {
-        // Otherwise, it's the sum of the previous node's origin and height
-        const prev = acc[i - 1];
-        // TODO: if using scale, add reliable way to get the node's original height
-        const { height } = prev.node.getBoundingClientRect();
-        originY = prev.originY + height;
-      }
+      const originY = calculatePosition(node, i, acc, "originY");
       acc.push({ node, originY, domIndex: i });
       return acc;
     }, [])
+    // Sort nodes according to where they stand visually
     .sort(
       ({ node: a }, { node: b }) =>
         a.getBoundingClientRect().top - b.getBoundingClientRect().top
     )
+    // Calculate offset Y positions
     .reduce<PositionData[]>((acc, curr, i) => {
-      // at this point, curr will have an "origin"
-      // use this to calculate the new `y` value (offset)
-      // figure out where it SHOULD be (target): parent.top if index 0, else acc[i - 1].target + height
-      // return offset as (target - origin)
       const { node, originY } = curr;
-      let target: number;
-      if (i === 0) {
-        assertHTMLElement(node.parentElement);
-        target = node.parentElement.getBoundingClientRect().top;
-      } else {
-        const prev = acc[i - 1];
-        // TODO: Add reliable way to get node height if scaling
-        target = prev.target + prev.node.getBoundingClientRect().height;
-      }
+      const target = calculatePosition(node, i, acc, "target");
       acc.push({ ...curr, target, offset: target - originY });
       return acc;
     }, []);
@@ -73,28 +68,24 @@ const getNodePositions = (target: EventTarget) => {
 
 export const DragAndDrop = () => {
   const ITEM_COUNT = 5;
-  const items = useRef(
-    Array(ITEM_COUNT)
-      .fill(0)
-      .map((_, index) => index)
-  );
-  const [springs, api] = useSprings(ITEM_COUNT, (i) => {
+  const [springs, api] = useSprings(ITEM_COUNT, () => {
     return {
       y: 0,
       zIndex: 0,
     };
   });
   const bind = useDrag(
-    ({ args: [boundIndex], down, active, movement: [, my], currentTarget }) => {
+    ({ args: [boundIndex], active, xy: [, mouseY], currentTarget }) => {
       const nodePositions = getNodePositions(currentTarget);
-      api.start((i, controller) => {
+      api.start((i) => {
+        const currentNode = nodePositions.get(i);
+        if (!currentNode) throw "Accessing out of bounds node";
+        const { originY, node } = currentNode;
         const isCurrentElement = boundIndex === i;
         const isDragging = active && isCurrentElement;
         if (isDragging) {
           return {
-            // TODO: account for offset so that element doesn't fly back to its origin
-            // position when dragging
-            y: my,
+            y: mouseY - (originY + node.getBoundingClientRect().height / 2),
             zIndex: 10,
             immediate: (key: string) => key === "zIndex",
           };
