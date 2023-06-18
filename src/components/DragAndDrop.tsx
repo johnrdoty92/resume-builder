@@ -2,29 +2,6 @@ import { useSprings, animated } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
 import classes from "./DragAndDrop.module.css";
 
-const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
-
-const calculatePosition = <T extends { node: HTMLElement }>(
-  node: Node,
-  index: number,
-  accumulator: T[],
-  targetKey: keyof T
-) => {
-  if (index === 0) {
-    assertHTMLElement(node.parentElement);
-    return node.parentElement.getBoundingClientRect().top;
-  } else {
-    const prev = accumulator[index - 1];
-    const { height } = prev.node.getBoundingClientRect();
-    return (prev[targetKey] as number) + height;
-  }
-};
-
-function assertHTMLElement(element: unknown): asserts element is HTMLElement {
-  if (!(element instanceof HTMLElement))
-    throw "Cannot access HTMLElement properties on invalid element";
-}
-
 type PositionData = {
   offset: number; // target - origin
   target: number;
@@ -36,7 +13,28 @@ type NodeOriginData = {
   domIndex: number;
 };
 
-const getNodePositions = (target: EventTarget) => {
+function calculatePosition<T extends { node: HTMLElement }>(
+  node: Node,
+  index: number,
+  accumulator: T[],
+  targetKey: keyof T
+) {
+  if (index === 0) {
+    assertHTMLElement(node.parentElement);
+    return node.parentElement.getBoundingClientRect().top;
+  } else {
+    const prev = accumulator[index - 1];
+    const { height } = prev.node.getBoundingClientRect();
+    return (prev[targetKey] as number) + height;
+  }
+}
+
+function assertHTMLElement(element: unknown): asserts element is HTMLElement {
+  if (!(element instanceof HTMLElement))
+    throw "Cannot access HTMLElement properties on invalid element";
+}
+
+function getNodePositions(target: EventTarget) {
   assertHTMLElement(target);
   if (!target.parentElement) throw "No parent on dragged element";
 
@@ -64,16 +62,17 @@ const getNodePositions = (target: EventTarget) => {
     acc.set(curr.domIndex, curr);
     return acc;
   }, new Map());
-};
+}
 
-export const DragAndDrop = () => {
-  const ITEM_COUNT = 5;
-  const [springs, api] = useSprings(ITEM_COUNT, () => {
+export function DragAndDrop({ nodes }: { nodes: React.ReactNode[] }) {
+  const nodeCount = nodes.length;
+  const [springs, api] = useSprings(nodeCount, () => {
     return {
       y: 0,
       zIndex: 0,
     };
   });
+  
   const bind = useDrag(
     ({ args: [boundIndex], active, xy: [, mouseY], currentTarget }) => {
       const nodePositions = getNodePositions(currentTarget);
@@ -98,6 +97,7 @@ export const DragAndDrop = () => {
       });
     }
   );
+
   return (
     <div>
       {springs.map((props, domIndex) => (
@@ -107,12 +107,12 @@ export const DragAndDrop = () => {
           style={{
             ...props,
             touchAction: "none",
-            backgroundColor: `rgb(${255 / (domIndex + 1)}, 150, 160)`,
-            height: HEIGHTS[domIndex],
           }}
           className={classes.draggable}
-        ></animated.div>
+        >
+          {nodes[domIndex]}
+        </animated.div>
       ))}
     </div>
   );
-};
+}
