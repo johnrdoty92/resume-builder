@@ -3,6 +3,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
   ],
@@ -11,5 +12,7 @@ module.exports = {
   plugins: ["react-refresh"],
   rules: {
     "react-refresh/only-export-components": "warn",
+    "@typescript-eslint/ban-types": ["error", { types: { "{}": false } }],
+    "react/react-in-jsx-scope": "off",
   },
 };
