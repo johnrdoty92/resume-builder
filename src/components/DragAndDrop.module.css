@@ -1,11 +1,10 @@
 .draggable {
-    background-color: red;
-    outline: 1px solid maroon;
-    width: 300px;
+    background-color: white;
 }
 
 .draggable:hover {
     cursor: grab;
+    background-color: rgb(225, 225, 225);
 }
 
 .dragging {

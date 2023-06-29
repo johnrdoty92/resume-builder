@@ -6,9 +6,10 @@ type HeaderProps = {
   name: string;
   details?: Partial<Record<DetailKey, string>>;
 };
+
 export const Header = ({ name, details = {} }: HeaderProps) => {
   return (
-    <section className={classes.header}>
+    <div className={classes.header}>
       <h1 className={classes.name}>{name}</h1>
       <div className={classes.detailsContainer}>
         {Object.entries(details).map(([detailType, detailInfo], i) => {
@@ -19,6 +20,6 @@ export const Header = ({ name, details = {} }: HeaderProps) => {
           );
         })}
       </div>
-    </section>
+    </div>
   );
 };

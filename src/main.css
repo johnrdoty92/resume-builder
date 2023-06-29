@@ -1,3 +1,7 @@
+:root {
+    font-family: Arial, sans-serif;
+}
+
 *,
 *::before,
 *::after {
@@ -7,4 +11,26 @@
 html {
     height: 100dvh;
     background-color: rgb(50, 50, 50);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ul,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+section {
+    padding-bottom: 1rem;
+}
+
+section h2 {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid black;
 }

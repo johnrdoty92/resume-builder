@@ -1,14 +1,16 @@
 .header {
     display: flex;
     flex-direction: column;
+    margin-bottom: 1rem;
 }
 
 .name {
-    margin: 0;
+    margin-inline: auto;
 }
 
 .detailsContainer {
     display: flex;
+    margin-inline: auto;
 }
 
 .detail {}
