@@ -15,6 +15,7 @@ export const ResumeEntry = ({
 }: ResumeEntryProps) => {
   return (
     <div className={classes.resumeEntry}>
+      {/* TODO: absolutely positioned edit button that dispatches the unique key to this component. Should accept that key as a prop */}
       <div className={classes.resumeEntryHeader}>
         <p>{primaryInfo}</p>
         {secondaryInfo.map((info, i) => (
