@@ -2,7 +2,7 @@ import { DragAndDrop } from "./components/DragAndDrop";
 // import classes from "./components/DragAndDrop.module.css";
 import { Education } from "./components/Sections/Education/Education";
 import { Experience } from "./components/Sections/Experience/Experience";
-import { Header } from "./components/Sections/Header/Header";
+import { Header } from "./components/Header/Header";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
 // const nodes = HEIGHTS.map((height, i) => (
