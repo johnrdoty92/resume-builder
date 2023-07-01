@@ -1,0 +1,31 @@
+:root {
+    --border-radius: 4px;
+}
+
+.modal {
+    background-color: rgba(0, 0, 0, 0.75);
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: end center;
+}
+
+.modalContent {
+    background-color: white;
+    padding: 1em;
+    margin-inline: 0;
+    margin-block: 0;
+    border-radius: var(--border-radius) var(--border-radius) 0px 0px;
+}
+
+@media (min-width: 600px) {
+    .modal {
+        place-items: start center;
+    }
+
+    .modalContent {
+        max-width: 600px;
+        border-radius: var(--border-radius);
+        margin-block: 2rem 0;
+    }
+}
