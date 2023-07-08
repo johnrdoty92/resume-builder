@@ -1,14 +1,29 @@
-import { EditorModalState } from "../../contexts/EditorModalState";
+import { Section } from "../../contexts/ResumeStateContext";
 import { useEditorModalDispatch } from "../../contexts/hooks";
 
-type SectionTitle = "Work Experience" | "Education" | "Skills" | "Projects";
+// TODO: Add Skills and update Section type
+type SectionTitle = "Work Experience" | "Education" | "Projects";
 
-// TODO: Create real placeholder values
-const placeholders: Record<SectionTitle, EditorModalState["content"]> = {
-  "Work Experience": <div>Work Experience</div>,
-  Education: <div>Education</div>,
-  Projects: <div>Projects</div>,
-  Skills: <div>Skills</div>,
+const placeholders: Record<SectionTitle, Section> = {
+  "Work Experience": {
+    title: "Work Experience",
+    entries: [{ primaryInfo: "", details: ["", ""] }],
+  },
+  Education: {
+    title: "Education",
+    entries: [
+      {
+        primaryInfo: "",
+        date: [new Date(), "Current"],
+        secondaryInfo: ["", ""],
+        details: [""],
+      },
+    ],
+  },
+  Projects: {
+    title: "Projects",
+    entries: [{ primaryInfo: "", details: ["", ""] }],
+  },
 };
 
 type AddSectionButtonProps = {
@@ -19,7 +34,7 @@ export const AddSectionButton = ({ title }: AddSectionButtonProps) => {
   const { openModalWithContent } = useEditorModalDispatch();
 
   const handleClick = () => {
-    openModalWithContent(placeholders[title]);
+    openModalWithContent({ id: crypto.randomUUID(), ...placeholders[title] });
   };
 
   return <button onClick={handleClick}>ADD {title} SECTION</button>;

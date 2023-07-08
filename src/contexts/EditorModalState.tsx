@@ -1,10 +1,9 @@
 import { Reducer, createContext, useReducer } from "react";
+import { Section } from "./ResumeStateContext";
 
 export type EditorModalState = {
   open: boolean;
-  // TODO: Content should be data that can be mapped out into fields
-  // It may also need access to an id that can be used to update resume state
-  content: React.ReactNode;
+  content: { id: string } & Section;
 };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
@@ -19,7 +18,7 @@ export const EditorModalDispatchContext = createContext<EditorModalDispatch | nu
 type ACTION =
   | {
       type: "open";
-      content: React.ReactNode;
+      content: EditorModalState["content"];
     }
   | {
       type: "close";
@@ -44,9 +43,12 @@ const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { typ
 };
 
 export const EditorModalStateProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(editorModalStateReducer, { open: false, content: null });
+  const [state, dispatch] = useReducer(editorModalStateReducer, {
+    open: false,
+    content: { id: "", title: "", entries: [] },
+  });
 
-  const openModalWithContent = (content: React.ReactNode) => {
+  const openModalWithContent = (content: EditorModalState["content"]) => {
     dispatch({ type: "open", content });
   };
 
