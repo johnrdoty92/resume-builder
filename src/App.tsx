@@ -5,6 +5,8 @@ import { Experience } from "./components/Sections/Experience/Experience";
 import { Header } from "./components/Header/Header";
 import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
 import { Section } from "./components/Sections/Section";
+import { AddSectionButton } from "./components/Button/AddSectionButton";
+import { EditorModal } from "./components/Modal/EditorModal";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
 // const nodes = HEIGHTS.map((height, i) => (
@@ -96,6 +98,11 @@ function App() {
           <Experience key="experience" entries={experience} />,
         ]}
       /> */}
+      {/* TODO: group and style */}
+      <AddSectionButton title="Education" />
+      <AddSectionButton title="Work Experience" />
+      <AddSectionButton title="Skills" />
+      <EditorModal />
     </main>
   );
 }
