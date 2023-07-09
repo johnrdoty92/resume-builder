@@ -17,16 +17,11 @@ export type Section = {
 type ResumeState = Record<SectionId, Section>;
 
 // TODO: Add "RESET" action to clear out local storage
-// TODO: ADD_SECTION/UPDATE_SECTION are similar. Maybe just have a "SAVE_CHANGES" dispatch
-// that takes an id, tries to overwrite if exists, otherwise creates a new entry.
+
 type ACTION =
   | {
-      type: "ADD_SECTION";
-      payload: { id: SectionId; placeholders: Section };
-    }
-  | {
-      type: "UPDATE_SECTION";
-      payload: { id: SectionId; updatedEntries: ResumeEntry[] };
+      type: "SAVE_SECTION";
+      payload: { id: SectionId; sectionData: Section };
     }
   | {
       type: "DELETE_SECTION";
@@ -35,23 +30,11 @@ type ACTION =
 
 const resumeStateReducer: Reducer<ResumeState, ACTION> = (state, { type, payload }) => {
   switch (type) {
-    case "ADD_SECTION": {
-      const { id, placeholders } = payload;
+    case "SAVE_SECTION": {
+      const { id, sectionData } = payload;
       return {
         ...state,
-        [id]: placeholders,
-      };
-    }
-    case "UPDATE_SECTION": {
-      const { id, updatedEntries } = payload;
-      const currentSectionInfo = state[id];
-      if (!currentSectionInfo) throw `Missing info for id ${id}`;
-      return {
-        ...state,
-        [id]: {
-          ...currentSectionInfo,
-          entries: updatedEntries,
-        },
+        [id]: sectionData,
       };
     }
     case "DELETE_SECTION": {
@@ -66,8 +49,7 @@ const resumeStateReducer: Reducer<ResumeState, ACTION> = (state, { type, payload
 export const ResumeStateContext = createContext<ResumeState>({});
 
 type ResumeDispatch = {
-  addSection(payload: { id: string; placeholders: Section }): void;
-  updateSection(payload: { id: string; updatedEntries: ResumeEntry[] }): void;
+  saveSection(payload: { id: string; sectionData: Section }): void;
   deleteSection(id: string): void;
 };
 
@@ -78,12 +60,8 @@ export const ResumeStateProvider = ({ children }: { children: React.ReactNode })
 
   // TODO: useEffect that save changes to localStorage whenever resumeState changes
 
-  const addSection = (payload: { id: string; placeholders: Section }) => {
-    dispatch({ type: "ADD_SECTION", payload });
-  };
-
-  const updateSection = (payload: { id: string; updatedEntries: ResumeEntry[] }) => {
-    dispatch({ type: "UPDATE_SECTION", payload });
+  const saveSection = (payload: { id: string; sectionData: Section }) => {
+    dispatch({ type: "SAVE_SECTION", payload });
   };
 
   const deleteSection = (id: string) => {
@@ -91,7 +69,7 @@ export const ResumeStateProvider = ({ children }: { children: React.ReactNode })
   };
   return (
     <ResumeStateContext.Provider value={resumeState}>
-      <ResumeDispatchContext.Provider value={{ addSection, updateSection, deleteSection }}>
+      <ResumeDispatchContext.Provider value={{ saveSection, deleteSection }}>
         {children}
       </ResumeDispatchContext.Provider>
     </ResumeStateContext.Provider>

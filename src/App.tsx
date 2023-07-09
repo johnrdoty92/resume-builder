@@ -7,6 +7,7 @@ import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
 import { Section } from "./components/Sections/Section";
 import { AddSectionButton } from "./components/Button/AddSectionButton";
 import { EditorModal } from "./components/Modal/EditorModal";
+import { useResumeState } from "./contexts/hooks";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
 // const nodes = HEIGHTS.map((height, i) => (
@@ -50,7 +51,7 @@ const SAMPLE_PROPS = {
 
 function App() {
   const { header, education, experience } = SAMPLE_PROPS;
-  // TODO: call state hook
+  const resumeState = useResumeState();
   return (
     <main
       style={{
@@ -62,8 +63,7 @@ function App() {
       }}
     >
       <Header name={header.name} details={{ email: header.email }} />
-      <Education entries={education} />
-      <Experience entries={experience} />
+      <pre>{JSON.stringify(resumeState, null, 2)}</pre>
       {/* TODO: Map out state from context. Be sure to add DragAndDrop around both arrays */}
       {/* {state.map(([title, entries]) => (
         <Section title={title}>
@@ -72,25 +72,6 @@ function App() {
           ))}
         </Section>
       ))} */}
-      <Section title="Work Experience">
-        <ResumeEntry
-          primaryInfo="Software Engineer"
-          secondaryInfo={["Google", "USA"]}
-          details={[
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, velit mollitia. Placeat, voluptas nisi reiciendis enim voluptates mollitia sunt eveniet id, dolor amet itaque! Culpa ex atque fuga natus nam.",
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, velit mollitia. Placeat, voluptas nisi reiciendis enim voluptates mollitia sunt eveniet id, dolor amet itaque! Culpa ex atque fuga natus nam.",
-          ]}
-          date={[new Date(1, 10, 2020), "Current"]}
-        />
-        <ResumeEntry
-          primaryInfo="Software Engineer"
-          secondaryInfo={["Google", "USA"]}
-          details={[
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, velit mollitia. Placeat, voluptas nisi reiciendis enim voluptates mollitia sunt eveniet id, dolor amet itaque! Culpa ex atque fuga natus nam.",
-          ]}
-          date={new Date(1, 10, 2020)}
-        />
-      </Section>
       {/* <DragAndDrop nodes={nodes} /> */}
       {/* <DragAndDrop
         nodes={[
