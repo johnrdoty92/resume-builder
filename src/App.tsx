@@ -82,6 +82,7 @@ function App() {
       {/* TODO: group and style */}
       <AddSectionButton title="Education" />
       <AddSectionButton title="Work Experience" />
+      <AddSectionButton title="Projects" />
       <EditorModal />
     </main>
   );

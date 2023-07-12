@@ -9,8 +9,11 @@ export type ResumeEntry = {
   details: string[];
 };
 
+// TODO: Add Skills and update Section type. Skills should be like chip array.
+export type SectionTitle = "Work Experience" | "Education" | "Projects";
+
 export type Section = {
-  title: string;
+  title: SectionTitle;
   entries: ResumeEntry[];
 };
 

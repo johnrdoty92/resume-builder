@@ -1,8 +1,5 @@
-import { Section } from "../../contexts/ResumeStateContext";
+import { Section, SectionTitle } from "../../contexts/ResumeStateContext";
 import { useEditorModalDispatch } from "../../contexts/hooks";
-
-// TODO: Add Skills and update Section type
-type SectionTitle = "Work Experience" | "Education" | "Projects";
 
 const placeholders: Record<SectionTitle, Section> = {
   "Work Experience": {

@@ -45,7 +45,7 @@ const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { typ
 export const EditorModalStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(editorModalStateReducer, {
     open: false,
-    content: { id: "", title: "", entries: [] },
+    content: { id: "", title: "Education", entries: [] },
   });
 
   const openModalWithContent = (content: EditorModalState["content"]) => {
