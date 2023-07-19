@@ -1,5 +1,6 @@
 import { Reducer, createContext, useReducer } from "react";
 import { Section } from "./ResumeStateContext";
+import { newEntryDefaults } from "../constants/editorModal";
 
 export type EditorModalState = {
   open: boolean;
@@ -10,6 +11,7 @@ export const EditorModalStateContext = createContext<EditorModalState | null>(nu
 
 type EditorModalDispatch = {
   openModalWithContent: (content: EditorModalState["content"]) => void;
+  addModalEntry: () => void;
   closeModal: () => void;
 };
 
@@ -21,12 +23,26 @@ type ACTION =
       content: EditorModalState["content"];
     }
   | {
+      type: "add";
+      content?: never;
+    }
+  | {
       type: "close";
       content?: never;
     };
 
 const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { type, content }) => {
   switch (type) {
+    case "add": {
+      const newEntry = newEntryDefaults[state.content.title];
+      return {
+        ...state,
+        content: {
+          ...state.content,
+          entries: [...state.content.entries, newEntry],
+        },
+      };
+    }
     case "open": {
       return {
         open: true,
@@ -52,13 +68,19 @@ export const EditorModalStateProvider = ({ children }: { children: React.ReactNo
     dispatch({ type: "open", content });
   };
 
+  const addModalEntry = () => {
+    dispatch({ type: "add" });
+  };
+
   const closeModal = () => {
     dispatch({ type: "close" });
   };
 
   return (
     <EditorModalStateContext.Provider value={state}>
-      <EditorModalDispatchContext.Provider value={{ openModalWithContent, closeModal }}>
+      <EditorModalDispatchContext.Provider
+        value={{ openModalWithContent, closeModal, addModalEntry }}
+      >
         {children}
       </EditorModalDispatchContext.Provider>
     </EditorModalStateContext.Provider>

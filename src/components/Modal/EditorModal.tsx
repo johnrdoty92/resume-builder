@@ -1,9 +1,11 @@
-import { ResumeEntry, Section, SectionTitle } from "../../contexts/ResumeStateContext";
+import { entryLabels } from "../../constants/editorModal";
+import { ResumeEntry } from "../../contexts/ResumeStateContext";
 import {
   useEditorModalDispatch,
   useEditorModalState,
   useResumeDispatch,
 } from "../../contexts/hooks";
+import { AddModalEntry } from "../Button/AddModalEntry";
 import { Modal } from "./Modal";
 
 const validateSectionData = (data: FormData): any => {
@@ -23,27 +25,6 @@ const validateSectionData = (data: FormData): any => {
     }
   }
   return sectionDataEntries;
-};
-
-type ResumeEntryValuesAsStrings = { [Key in keyof ResumeEntry]: string };
-
-const entryLabels: Record<SectionTitle, ResumeEntryValuesAsStrings> = {
-  "Work Experience": {
-    primaryInfo: "Role",
-    details: "Responsibilities",
-    date: "Dates",
-  },
-  Education: {
-    primaryInfo: "Degree",
-    date: "Date of Completion",
-    details: "Location",
-    secondaryInfo: "University / School",
-  },
-  Projects: {
-    primaryInfo: "Project Title",
-    secondaryInfo: "Link",
-    details: "Achievements",
-  },
 };
 
 export const EditorModal = () => {
@@ -131,6 +112,7 @@ export const EditorModal = () => {
             </fieldset>
           );
         })}
+        <AddModalEntry />
         <button type="submit">Save</button>
         <button onClick={handleCancel}>Cancel</button>
       </form>
