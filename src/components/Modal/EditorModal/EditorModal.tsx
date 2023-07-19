@@ -1,12 +1,15 @@
-import { entryLabels } from "../../constants/editorModal";
-import { ResumeEntry } from "../../contexts/ResumeStateContext";
+import { entryLabels } from "../../../constants/editorModal";
+import { ResumeEntry } from "../../../contexts/ResumeStateContext";
 import {
   useEditorModalDispatch,
   useEditorModalState,
   useResumeDispatch,
-} from "../../contexts/hooks";
-import { AddModalEntry } from "../Button/AddModalEntry";
-import { Modal } from "./Modal";
+} from "../../../contexts/hooks";
+import { AddModalEntry } from "../../Button/AddModalEntry";
+import { Modal } from "../Modal";
+import { BulletPoints } from "./BulletPoints";
+import { PrimaryInfo } from "./PrimaryInfo";
+import { SecondaryInfo } from "./SecondaryInfo";
 
 const validateSectionData = (data: FormData): any => {
   // TODO: add better type safety to form validation
@@ -32,6 +35,7 @@ export const EditorModal = () => {
   const { closeModal } = useEditorModalDispatch();
   const { content, open } = useEditorModalState();
   const { id, title, entries } = content;
+  const { details, primaryInfo, date, secondaryInfo } = entryLabels[title];
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -52,37 +56,16 @@ export const EditorModal = () => {
           Section Title
           <input name="title" defaultValue={title} />
         </label>
-        {entries.map((entry) => {
+        {entries.map((entry, i) => {
           return (
             <fieldset
-              key={entry.primaryInfo + entry.details}
+              key={entry.primaryInfo + entry.details + i.toString()}
               style={{ display: "flex", flexDirection: "column" }}
             >
               <legend>Details</legend>
-              <label>
-                {entryLabels[title].primaryInfo}
-                <input name="primaryInfo" defaultValue={entry.primaryInfo} />
-              </label>
-              {/* BULLET POINTS */}
-              <p>{entryLabels[title].details}</p>
-              {entry.details.map((detail, i) => {
-                return <input key={`${detail}-${i}`} name={`details-${i}`} defaultValue={detail} />;
-              })}
-              {/* SECONDARY INFO */}
-              {entry.secondaryInfo && (
-                <>
-                  <p>{entryLabels[title].secondaryInfo}</p>
-                  {entry.secondaryInfo?.map((secondaryDetail, i) => {
-                    return (
-                      <input
-                        name={`secondaryInfo-${i}`}
-                        key={`${secondaryDetail}-${i}`}
-                        defaultValue={secondaryDetail}
-                      />
-                    );
-                  })}
-                </>
-              )}
+              <PrimaryInfo label={primaryInfo} value={entry.primaryInfo} />
+              <BulletPoints label={entryLabels[title].details} details={entry.details} />
+              <SecondaryInfo label={secondaryInfo} details={entry.secondaryInfo} />
               {/* TODO: create component that handles dates and secondary input as chip array, etc */}
               {entry.date && (
                 <>

@@ -6,7 +6,7 @@ import { Header } from "./components/Header/Header";
 import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
 import { Section } from "./components/Sections/Section";
 import { AddSectionButton } from "./components/Button/AddSectionButton";
-import { EditorModal } from "./components/Modal/EditorModal";
+import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
 import { useResumeState } from "./contexts/hooks";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
