@@ -1,5 +1,5 @@
 import { entryLabels } from "../../../constants/editorModal";
-import { ResumeEntry } from "../../../contexts/ResumeStateContext";
+import { Section, SectionTitle } from "../../../contexts/ResumeStateContext";
 import {
   useEditorModalDispatch,
   useEditorModalState,
@@ -11,31 +11,25 @@ import { BulletPoints } from "./BulletPoints";
 import { PrimaryInfo } from "./PrimaryInfo";
 import { SecondaryInfo } from "./SecondaryInfo";
 
-const validateSectionData = (data: FormData): any => {
-  // TODO: add better type safety to form validation
-  const validKeys: (keyof ResumeEntry)[] = ["date", "details", "primaryInfo", "secondaryInfo"];
-  // const sectionDataEntries: Record<keyof ResumeEntry, ResumeEntry[keyof ResumeEntry]> = {};
-  const sectionDataEntries: any = {};
-  for (const [key, value] of data.entries()) {
-    const [inputName] = key.split("-");
-    const validKey = validKeys.find((k) => k === inputName);
-    if (!validKey) continue;
-    if (validKey === "date" || validKey === "details" || validKey === "secondaryInfo") {
-      const copy = sectionDataEntries[validKey];
-      sectionDataEntries[validKey] = [...(copy ?? []), value];
-    } else {
-      sectionDataEntries[validKey] = value;
-    }
-  }
-  return sectionDataEntries;
-};
-
 export const EditorModal = () => {
   const { saveSection } = useResumeDispatch();
   const { closeModal } = useEditorModalDispatch();
   const { content, open } = useEditorModalState();
   const { id, title, entries } = content;
   const { details, primaryInfo, date, secondaryInfo } = entryLabels[title];
+
+  const validateSectionData = (data: FormData): Section => {
+    const title = data.get("title") as SectionTitle;
+    for (const [key, value] of data.entries()) {
+      const [resumeEntryKey] = key.split("-");
+      // TODO: Group entries by ids, eg primaryInfo-{index}-{identifier} can be split to figure out
+      // which entry the value should go into
+    }
+    return {
+      title,
+      entries: [],
+    };
+  };
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -56,6 +50,7 @@ export const EditorModal = () => {
           Section Title
           <input name="title" defaultValue={title} />
         </label>
+        {/* TODO: create single component that takes "entry" and index to generate inputs */}
         {entries.map((entry, i) => {
           return (
             <fieldset
@@ -97,7 +92,9 @@ export const EditorModal = () => {
         })}
         <AddModalEntry />
         <button type="submit">Save</button>
-        <button onClick={handleCancel}>Cancel</button>
+        <button type="button" onClick={handleCancel}>
+          Cancel
+        </button>
       </form>
     </Modal>
   );
