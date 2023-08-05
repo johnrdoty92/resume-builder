@@ -21,25 +21,6 @@ export const entryLabels: Record<SectionTitle, ResumeEntryValuesAsStrings> = {
   },
 };
 
-export const newEntryDefaults: Record<SectionTitle, Section["entries"][0]> = {
-  "Work Experience": {
-    primaryInfo: "",
-    secondaryInfo: [],
-    details: [],
-  },
-  Education: {
-    primaryInfo: "",
-    date: [new Date(), new Date()],
-    details: [],
-    secondaryInfo: [],
-  },
-  Projects: {
-    primaryInfo: "",
-    secondaryInfo: [],
-    details: [],
-  },
-};
-
 export const placeholders: Record<SectionTitle, Section> = {
   "Work Experience": {
     title: "Work Experience",

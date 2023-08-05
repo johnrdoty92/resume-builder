@@ -1,6 +1,6 @@
 import { Reducer, createContext, useReducer } from "react";
 import { Section } from "./ResumeStateContext";
-import { newEntryDefaults } from "../constants/editorModal";
+import { placeholders } from "../constants/editorModal";
 
 export type EditorModalState = {
   open: boolean;
@@ -34,12 +34,12 @@ type ACTION =
 const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { type, content }) => {
   switch (type) {
     case "add": {
-      const newEntry = newEntryDefaults[state.content.title];
+      const newEntry = placeholders[state.content.title].entries;
       return {
         ...state,
         content: {
           ...state.content,
-          entries: [...state.content.entries, newEntry],
+          entries: [...state.content.entries, ...newEntry],
         },
       };
     }
