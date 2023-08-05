@@ -2,10 +2,10 @@ import { useEntryEditorContext } from "./EntryEditorContext/useEntryEditorContex
 
 export const PrimaryInfo = () => {
   const { id, entry, labels } = useEntryEditorContext();
-  const { primaryInfo } = labels;
+  const { primaryInfoLabel } = labels;
   return (
     <div>
-      <h6>{primaryInfo}</h6>
+      <h6>{primaryInfoLabel}</h6>
       <input name={`primaryInfo-${id}`} defaultValue={entry.primaryInfo} />
     </div>
   );

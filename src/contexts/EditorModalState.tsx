@@ -22,6 +22,7 @@ type ACTION =
       type: "open";
       content: EditorModalState["content"];
     }
+  // TODO: add "remove" dispatch to be called in the editor modal context
   | {
       type: "add";
       content?: never;

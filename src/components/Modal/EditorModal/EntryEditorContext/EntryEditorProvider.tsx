@@ -1,10 +1,10 @@
 import { PropsWithChildren, createContext, useId } from "react";
 import { ResumeEntry, SectionTitle } from "contexts/ResumeStateContext";
-import { ResumeEntryValuesAsStrings, entryLabels } from "constants/editorModal";
+import { ResumeEntryLabels, entryLabels } from "constants/editorModal";
 
 type EntryEditorContextValue = {
   id: string;
-  labels: ResumeEntryValuesAsStrings;
+  labels: ResumeEntryLabels;
   entry: ResumeEntry;
 };
 

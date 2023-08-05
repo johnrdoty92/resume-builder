@@ -1,23 +1,23 @@
 import { ResumeEntry, Section, SectionTitle } from "../contexts/ResumeStateContext";
 
-export type ResumeEntryValuesAsStrings = { [Key in keyof ResumeEntry]: string };
+export type ResumeEntryLabels = { [Key in keyof ResumeEntry as `${Key}Label`]: string };
 
-export const entryLabels: Record<SectionTitle, ResumeEntryValuesAsStrings> = {
+export const entryLabels: Record<SectionTitle, ResumeEntryLabels> = {
   "Work Experience": {
-    primaryInfo: "Role",
-    details: "Responsibilities",
-    date: "Dates",
+    primaryInfoLabel: "Role",
+    detailsLabel: "Responsibilities",
+    dateLabel: "Dates",
   },
   Education: {
-    primaryInfo: "Degree",
-    date: "Date of Completion",
-    details: "Location",
-    secondaryInfo: "University / School",
+    primaryInfoLabel: "Degree",
+    dateLabel: "Date of Completion",
+    detailsLabel: "Location",
+    secondaryInfoLabel: "University / School",
   },
   Projects: {
-    primaryInfo: "Project Title",
-    secondaryInfo: "Link",
-    details: "Achievements",
+    primaryInfoLabel: "Project Title",
+    secondaryInfoLabel: "Link",
+    detailsLabel: "Achievements",
   },
 };
 

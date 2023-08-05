@@ -2,12 +2,12 @@ import { useEntryEditorContext } from "./EntryEditorContext/useEntryEditorContex
 
 export const SecondaryInfo = () => {
   const { id, entry, labels } = useEntryEditorContext();
-  const { secondaryInfo } = labels;
-  return entry.secondaryInfo && secondaryInfo ? (
+  const { secondaryInfoLabel } = labels;
+  return entry.secondaryInfo && secondaryInfoLabel ? (
     <div>
-      <h6>{secondaryInfo}</h6>
+      <h6>{secondaryInfoLabel}</h6>
       {entry.details.map((detail, i) => (
-        <input name={`secondaryInfo-${id}-${i}`} key={`${detail}-${i}`} defaultValue={detail} />
+        <input key={`${detail}${i}`} name={`secondaryInfo-${id}`} defaultValue={detail} />
       ))}
     </div>
   ) : (

@@ -1,4 +1,3 @@
-import { entryLabels } from "constants/editorModal";
 import { ResumeEntry, Section, SectionTitle } from "contexts/ResumeStateContext";
 import { useEditorModalDispatch, useEditorModalState, useResumeDispatch } from "contexts/hooks";
 import { AddModalEntry } from "components/Button/AddModalEntry";
@@ -7,6 +6,7 @@ import { BulletPoints } from "./BulletPoints";
 import { EntryEditorProvider } from "./EntryEditorContext/EntryEditorProvider";
 import { PrimaryInfo } from "./PrimaryInfo";
 import { SecondaryInfo } from "./SecondaryInfo";
+import { Dates } from "./Dates";
 
 export const EditorModal = () => {
   const { saveSection } = useResumeDispatch();
@@ -15,31 +15,23 @@ export const EditorModal = () => {
   const { id, title, entries } = content;
 
   const validateSectionData = (data: FormData): Section => {
-    // This will take one group of content and add it to the resume. It will be a single section,
-    // identified by a title and containing one or more entries
+    //TODO: title is editable, could be unpredictable
     const title = data.get("title") as SectionTitle;
-    // to prevent clashing, the "key" will be {resumeEntryKey}-{react useId value}
-    // this way, we can group values correctly with a map or something
-    // some items (like bullet points) have multiple values that associate with a single
-    // react useId value. In that case, use {resumeEntryKey}-{id}-{index} and push onto an array
-    const entryMap: Map<string, Partial<ResumeEntry>> = new Map();
-    // TODO: check this logic. Some of the entries aren't showing up on Add Item
+    const entryMap: Map<string, ResumeEntry> = new Map();
     for (const [key, value] of data.entries()) {
-      const [resumeEntryKey, uuid, index] = key.split("-");
-      const currentEntryInfo = entryMap.get(uuid) ?? {};
-      if (index) {
-        const details = [
-          ...((currentEntryInfo[resumeEntryKey as keyof ResumeEntry] as string[]) ?? []),
-          value,
-        ];
-        entryMap.set(uuid, { ...currentEntryInfo, [resumeEntryKey]: details });
+      if (key === "title") continue;
+      const [resumeEntryKey, uuid] = key.split("-");
+      const entryInfo = entryMap.get(uuid) ?? { primaryInfo: "", details: [] };
+      if (resumeEntryKey === "details" || resumeEntryKey === "secondaryInfo") {
+        const details = [...(entryInfo[resumeEntryKey] ?? []), value];
+        entryMap.set(uuid, { ...entryInfo, [resumeEntryKey]: details });
       } else {
-        entryMap.set(uuid, { ...currentEntryInfo, [resumeEntryKey]: value });
+        entryMap.set(uuid, { ...entryInfo, [resumeEntryKey]: value });
       }
     }
     return {
       title,
-      entries: Array.from(entryMap).map(([, entry]) => entry) as unknown as ResumeEntry[], //TODO: assert the entries
+      entries: Array.from(entryMap.values()),
     };
   };
 
@@ -63,32 +55,7 @@ export const EditorModal = () => {
               <PrimaryInfo />
               <BulletPoints />
               <SecondaryInfo />
-              {/* TODO: create component that handles dates and secondary input as chip array, etc */}
-              {entry.date && (
-                <>
-                  <p>{entryLabels[title].date}</p>
-                  {entry.date instanceof Date ? (
-                    <input type="date" name="date" defaultValue={entry.date.toDateString()} />
-                  ) : (
-                    <>
-                      <input
-                        type="date"
-                        name="date-0"
-                        defaultValue={entry.date[0].toDateString()}
-                      />
-                      <input
-                        type="date"
-                        name="date-1"
-                        defaultValue={
-                          typeof entry.date[1] === "string"
-                            ? entry.date[1]
-                            : entry.date[1].toDateString()
-                        }
-                      />
-                    </>
-                  )}
-                </>
-              )}
+              <Dates />
             </EntryEditorProvider>
           );
         })}
