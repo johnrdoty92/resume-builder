@@ -1,16 +1,14 @@
-import { getUniqueFormName } from "../../../utils/stringUtils";
+import { useEntryEditorContext } from "./EntryEditorContext/useEntryEditorContext";
 
-type BulletPointsProps = {
-  label: string;
-  details: string[];
-};
-
-export const BulletPoints = ({ label, details }: BulletPointsProps) => {
+export const BulletPoints = () => {
+  const { id, entry, labels } = useEntryEditorContext();
+  const { details } = labels;
   return (
     <div>
-      <h6>{label}</h6>
-      {details.map((detail, i) => (
-        <input key={`${detail}${i}`} name={getUniqueFormName("details")} defaultValue={detail} />
+      <h6>{details}</h6>
+      {/* TODO: this doesn't return anything when Add Item is clicked */}
+      {entry.details.map((detail, i) => (
+        <input key={`${detail}${i}`} name={`details-${id}-${i}`} defaultValue={detail} />
       ))}
     </div>
   );

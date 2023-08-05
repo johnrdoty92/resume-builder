@@ -1,12 +1,12 @@
-type PrimaryInfoProps = {
-  label: string;
-  value: string;
-};
-export const PrimaryInfo = ({ label, value }: PrimaryInfoProps) => {
+import { useEntryEditorContext } from "./EntryEditorContext/useEntryEditorContext";
+
+export const PrimaryInfo = () => {
+  const { id, entry, labels } = useEntryEditorContext();
+  const { primaryInfo } = labels;
   return (
     <div>
-      <h6>{label}</h6>
-      <input name="primaryInfo" defaultValue={value} />
+      <h6>{primaryInfo}</h6>
+      <input name={`primaryInfo-${id}`} defaultValue={entry.primaryInfo} />
     </div>
   );
 };

@@ -1,13 +1,10 @@
-import { entryLabels } from "../../../constants/editorModal";
-import { Section, SectionTitle } from "../../../contexts/ResumeStateContext";
-import {
-  useEditorModalDispatch,
-  useEditorModalState,
-  useResumeDispatch,
-} from "../../../contexts/hooks";
-import { AddModalEntry } from "../../Button/AddModalEntry";
+import { entryLabels } from "constants/editorModal";
+import { ResumeEntry, Section, SectionTitle } from "contexts/ResumeStateContext";
+import { useEditorModalDispatch, useEditorModalState, useResumeDispatch } from "contexts/hooks";
+import { AddModalEntry } from "components/Button/AddModalEntry";
 import { Modal } from "../Modal";
 import { BulletPoints } from "./BulletPoints";
+import { EntryEditorProvider } from "./EntryEditorContext/EntryEditorProvider";
 import { PrimaryInfo } from "./PrimaryInfo";
 import { SecondaryInfo } from "./SecondaryInfo";
 
@@ -16,30 +13,40 @@ export const EditorModal = () => {
   const { closeModal } = useEditorModalDispatch();
   const { content, open } = useEditorModalState();
   const { id, title, entries } = content;
-  const { details, primaryInfo, date, secondaryInfo } = entryLabels[title];
 
   const validateSectionData = (data: FormData): Section => {
+    // This will take one group of content and add it to the resume. It will be a single section,
+    // identified by a title and containing one or more entries
     const title = data.get("title") as SectionTitle;
+    // to prevent clashing, the "key" will be {resumeEntryKey}-{react useId value}
+    // this way, we can group values correctly with a map or something
+    // some items (like bullet points) have multiple values that associate with a single
+    // react useId value. In that case, use {resumeEntryKey}-{id}-{index} and push onto an array
+    const entryMap: Map<string, Partial<ResumeEntry>> = new Map();
+    // TODO: check this logic. Some of the entries aren't showing up on Add Item
     for (const [key, value] of data.entries()) {
-      const [resumeEntryKey] = key.split("-");
-      // TODO: Group entries by ids, eg primaryInfo-{index}-{identifier} can be split to figure out
-      // which entry the value should go into
+      const [resumeEntryKey, uuid, index] = key.split("-");
+      const currentEntryInfo = entryMap.get(uuid) ?? {};
+      if (index) {
+        const details = [
+          ...((currentEntryInfo[resumeEntryKey as keyof ResumeEntry] as string[]) ?? []),
+          value,
+        ];
+        entryMap.set(uuid, { ...currentEntryInfo, [resumeEntryKey]: details });
+      } else {
+        entryMap.set(uuid, { ...currentEntryInfo, [resumeEntryKey]: value });
+      }
     }
     return {
       title,
-      entries: [],
+      entries: Array.from(entryMap).map(([, entry]) => entry) as unknown as ResumeEntry[], //TODO: assert the entries
     };
   };
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const sectionData = validateSectionData(formData);
+    const sectionData = validateSectionData(new FormData(e.currentTarget));
     saveSection({ id, sectionData });
-    closeModal();
-  };
-
-  const handleCancel = () => {
     closeModal();
   };
 
@@ -50,17 +57,12 @@ export const EditorModal = () => {
           Section Title
           <input name="title" defaultValue={title} />
         </label>
-        {/* TODO: create single component that takes "entry" and index to generate inputs */}
         {entries.map((entry, i) => {
           return (
-            <fieldset
-              key={entry.primaryInfo + entry.details + i.toString()}
-              style={{ display: "flex", flexDirection: "column" }}
-            >
-              <legend>Details</legend>
-              <PrimaryInfo label={primaryInfo} value={entry.primaryInfo} />
-              <BulletPoints label={entryLabels[title].details} details={entry.details} />
-              <SecondaryInfo label={secondaryInfo} details={entry.secondaryInfo} />
+            <EntryEditorProvider title={title} entry={entry} key={entry.primaryInfo + i.toString()}>
+              <PrimaryInfo />
+              <BulletPoints />
+              <SecondaryInfo />
               {/* TODO: create component that handles dates and secondary input as chip array, etc */}
               {entry.date && (
                 <>
@@ -87,12 +89,12 @@ export const EditorModal = () => {
                   )}
                 </>
               )}
-            </fieldset>
+            </EntryEditorProvider>
           );
         })}
         <AddModalEntry />
         <button type="submit">Save</button>
-        <button type="button" onClick={handleCancel}>
+        <button type="button" onClick={closeModal}>
           Cancel
         </button>
       </form>

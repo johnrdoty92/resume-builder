@@ -1,6 +1,6 @@
 import { ResumeEntry, Section, SectionTitle } from "../contexts/ResumeStateContext";
 
-type ResumeEntryValuesAsStrings = { [Key in keyof ResumeEntry]: string };
+export type ResumeEntryValuesAsStrings = { [Key in keyof ResumeEntry]: string };
 
 export const entryLabels: Record<SectionTitle, ResumeEntryValuesAsStrings> = {
   "Work Experience": {
