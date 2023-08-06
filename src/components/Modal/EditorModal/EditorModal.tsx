@@ -7,6 +7,7 @@ import { EntryEditorProvider } from "./EntryEditorContext/EntryEditorProvider";
 import { PrimaryInfo } from "./PrimaryInfo";
 import { SecondaryInfo } from "./SecondaryInfo";
 import { Dates } from "./Dates";
+import { DELIMITER } from "constants/editorModal";
 
 export const EditorModal = () => {
   const { saveSection } = useResumeDispatch();
@@ -18,10 +19,15 @@ export const EditorModal = () => {
     const title = data.get("title") as SectionType;
     const entryMap: Map<string, SectionEntry> = new Map();
     for (const [key, value] of data.entries()) {
-      if (key === "title") continue;
+      if (key === "title" || typeof value !== "string") continue;
       const [resumeEntryKey, uuid] = key.split("-");
-      const entryInfo = entryMap.get(uuid) ?? { primaryInfo: "", details: [] };
-      if (resumeEntryKey === "details" || resumeEntryKey === "secondaryInfo") {
+      const entryInfo = entryMap.get(uuid) ?? { primaryInfo: "", bulletPoints: [] };
+      if (resumeEntryKey === "bulletPoints") {
+        const details = value.split(DELIMITER);
+        entryMap.set(uuid, { ...entryInfo, [resumeEntryKey]: details });
+      } else if (resumeEntryKey === "secondaryInfo") {
+        // TODO: handle secondaryInfo to also split value by delimiter
+        // secondaryInfo is currently only used to hold school info (uni name, gpa, major)
         const details = [...(entryInfo[resumeEntryKey] ?? []), value];
         entryMap.set(uuid, { ...entryInfo, [resumeEntryKey]: details });
       } else {
@@ -49,13 +55,9 @@ export const EditorModal = () => {
           Section Title
           <input name="title" defaultValue={heading} />
         </label>
-        {entries.map((entry, i) => {
+        {entries.map((entry) => {
           return (
-            <EntryEditorProvider
-              type={heading}
-              entry={entry}
-              key={entry.primaryInfo + i.toString()}
-            >
+            <EntryEditorProvider type={type} entry={entry} key={type}>
               <PrimaryInfo />
               <BulletPoints />
               <SecondaryInfo />

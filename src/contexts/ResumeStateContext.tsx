@@ -1,15 +1,16 @@
 import { Reducer, createContext, useReducer } from "react";
-
-// TODO: this might get replaced by values specific to each SectionType
+// TODO: create union of various types
+// TODO: remove secondaryInfo and add in "schoolInfo" and "skills" to respective SectionType
 export type SectionEntry = {
   primaryInfo: string;
   secondaryInfo?: string[];
   date?: Date | [Date, Date | "Current"];
-  details: string[];
+  bulletPoints: string[];
 };
 
 export type SectionType = "Work Experience" | "Education" | "Projects" | "Skills";
 
+// TODO: explicitly set "type" and use different entries types accordingly
 export type Section = {
   type: SectionType;
   heading: SectionType;

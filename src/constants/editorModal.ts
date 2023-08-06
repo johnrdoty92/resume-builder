@@ -5,24 +5,24 @@ export type SectionEntryLabels = { [Key in keyof SectionEntry as `${Key}Label`]:
 export const entryLabels: Record<SectionType, SectionEntryLabels> = {
   "Work Experience": {
     primaryInfoLabel: "Role",
-    detailsLabel: "Responsibilities",
+    bulletPointsLabel: "Responsibilities",
     dateLabel: "Dates",
   },
   Education: {
     primaryInfoLabel: "Degree",
     dateLabel: "Date of Completion",
-    detailsLabel: "Location",
+    bulletPointsLabel: "Location",
     secondaryInfoLabel: "University / School",
   },
   Projects: {
     primaryInfoLabel: "Project Title",
     secondaryInfoLabel: "Link",
-    detailsLabel: "Achievements",
+    bulletPointsLabel: "Achievements",
   },
   Skills: {
     // TODO: fix this
     primaryInfoLabel: "Skill",
-    detailsLabel: "Skills",
+    bulletPointsLabel: "Skills",
   },
 };
 
@@ -30,7 +30,7 @@ export const placeholders: Record<SectionType, Section> = {
   "Work Experience": {
     type: "Work Experience",
     heading: "Work Experience",
-    entries: [{ primaryInfo: "", details: ["", ""] }],
+    entries: [{ primaryInfo: "", bulletPoints: [] }],
   },
   Education: {
     type: "Education",
@@ -40,19 +40,21 @@ export const placeholders: Record<SectionType, Section> = {
         primaryInfo: "",
         date: [new Date(), "Current"],
         secondaryInfo: ["", ""],
-        details: [""],
+        bulletPoints: [""],
       },
     ],
   },
   Projects: {
     type: "Projects",
     heading: "Projects",
-    entries: [{ primaryInfo: "", details: ["", ""] }],
+    entries: [{ primaryInfo: "", bulletPoints: [] }],
   },
   Skills: {
     type: "Skills",
     heading: "Skills",
     // TODO: this should just be an array of skills, no primary info needed
-    entries: [{ primaryInfo: "", details: [""] }],
+    entries: [{ primaryInfo: "", bulletPoints: [""] }],
   },
 };
+
+export const DELIMITER = "%%%";
