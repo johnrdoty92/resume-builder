@@ -1,43 +1,44 @@
 import { Reducer, createContext, useReducer } from "react";
 
-type SectionId = string;
-
-export type ResumeEntry = {
+// TODO: this might get replaced by values specific to each SectionType
+export type SectionEntry = {
   primaryInfo: string;
   secondaryInfo?: string[];
   date?: Date | [Date, Date | "Current"];
   details: string[];
 };
 
-// TODO: Add Skills and update Section type. Skills should be like chip array.
-export type SectionTitle = "Work Experience" | "Education" | "Projects";
+export type SectionType = "Work Experience" | "Education" | "Projects" | "Skills";
 
 export type Section = {
-  title: SectionTitle;
-  entries: ResumeEntry[];
+  type: SectionType;
+  heading: SectionType;
+  entries: SectionEntry[];
 };
 
-type ResumeState = Record<SectionId, Section>;
-
-// TODO: Add "RESET" action to clear out local storage
+type ResumeState = Partial<Record<SectionType, Section>>;
 
 type ACTION =
   | {
       type: "SAVE_SECTION";
-      payload: { id: SectionId; sectionData: Section };
+      payload: { type: SectionType; sectionData: Section };
     }
   | {
       type: "DELETE_SECTION";
-      payload: SectionId;
+      payload: SectionType;
+    }
+  | {
+      type: "RESET";
+      payload?: never;
     };
 
 const resumeStateReducer: Reducer<ResumeState, ACTION> = (state, { type, payload }) => {
   switch (type) {
     case "SAVE_SECTION": {
-      const { id, sectionData } = payload;
+      const { type, sectionData } = payload;
       return {
         ...state,
-        [id]: sectionData,
+        [type]: sectionData,
       };
     }
     case "DELETE_SECTION": {
@@ -46,30 +47,35 @@ const resumeStateReducer: Reducer<ResumeState, ACTION> = (state, { type, payload
       delete copy[payload];
       return copy;
     }
+    case "RESET": {
+      return {};
+    }
   }
 };
 
 export const ResumeStateContext = createContext<ResumeState>({});
 
 type ResumeDispatch = {
-  saveSection(payload: { id: string; sectionData: Section }): void;
-  deleteSection(id: string): void;
+  saveSection(payload: { type: string; sectionData: Section }): void;
+  deleteSection(type: string): void;
 };
 
 export const ResumeDispatchContext = createContext<null | ResumeDispatch>(null);
 
 export const ResumeStateProvider = ({ children }: { children: React.ReactNode }) => {
-  const [resumeState, dispatch] = useReducer(resumeStateReducer, {}); // TODO: set initializer to fetch from localStorage
+  // TODO: set initializer to fetch from localStorage
+  const [resumeState, dispatch] = useReducer(resumeStateReducer, {});
 
   // TODO: useEffect that save changes to localStorage whenever resumeState changes
 
-  const saveSection = (payload: { id: string; sectionData: Section }) => {
+  const saveSection = (payload: { type: SectionType; sectionData: Section }) => {
     dispatch({ type: "SAVE_SECTION", payload });
   };
 
-  const deleteSection = (id: string) => {
+  const deleteSection = (id: SectionType) => {
     dispatch({ type: "DELETE_SECTION", payload: id });
   };
+
   return (
     <ResumeStateContext.Provider value={resumeState}>
       <ResumeDispatchContext.Provider value={{ saveSection, deleteSection }}>

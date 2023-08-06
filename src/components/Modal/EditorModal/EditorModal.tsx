@@ -1,4 +1,4 @@
-import { ResumeEntry, Section, SectionTitle } from "contexts/ResumeStateContext";
+import { SectionEntry, Section, SectionType } from "contexts/ResumeStateContext";
 import { useEditorModalDispatch, useEditorModalState, useResumeDispatch } from "contexts/hooks";
 import { AddModalEntry } from "components/Button/AddModalEntry";
 import { Modal } from "../Modal";
@@ -12,12 +12,11 @@ export const EditorModal = () => {
   const { saveSection } = useResumeDispatch();
   const { closeModal } = useEditorModalDispatch();
   const { content, open } = useEditorModalState();
-  const { id, title, entries } = content;
+  const { type, heading, entries } = content;
 
   const validateSectionData = (data: FormData): Section => {
-    //TODO: title is editable, could be unpredictable
-    const title = data.get("title") as SectionTitle;
-    const entryMap: Map<string, ResumeEntry> = new Map();
+    const title = data.get("title") as SectionType;
+    const entryMap: Map<string, SectionEntry> = new Map();
     for (const [key, value] of data.entries()) {
       if (key === "title") continue;
       const [resumeEntryKey, uuid] = key.split("-");
@@ -30,7 +29,8 @@ export const EditorModal = () => {
       }
     }
     return {
-      title,
+      type,
+      heading: title,
       entries: Array.from(entryMap.values()),
     };
   };
@@ -38,7 +38,7 @@ export const EditorModal = () => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const sectionData = validateSectionData(new FormData(e.currentTarget));
-    saveSection({ id, sectionData });
+    saveSection({ type, sectionData });
     closeModal();
   };
 
@@ -47,11 +47,15 @@ export const EditorModal = () => {
       <form onSubmit={handleSubmit}>
         <label>
           Section Title
-          <input name="title" defaultValue={title} />
+          <input name="title" defaultValue={heading} />
         </label>
         {entries.map((entry, i) => {
           return (
-            <EntryEditorProvider title={title} entry={entry} key={entry.primaryInfo + i.toString()}>
+            <EntryEditorProvider
+              type={heading}
+              entry={entry}
+              key={entry.primaryInfo + i.toString()}
+            >
               <PrimaryInfo />
               <BulletPoints />
               <SecondaryInfo />
@@ -60,7 +64,7 @@ export const EditorModal = () => {
           );
         })}
         <AddModalEntry />
-        <button type="submit">Save</button>
+        <button type="submit">Save Changes</button>
         <button type="button" onClick={closeModal}>
           Cancel
         </button>

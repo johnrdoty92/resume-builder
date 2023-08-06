@@ -4,7 +4,7 @@ import { placeholders } from "../constants/editorModal";
 
 export type EditorModalState = {
   open: boolean;
-  content: { id: string } & Section;
+  content: Section;
 };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
@@ -35,7 +35,7 @@ type ACTION =
 const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { type, content }) => {
   switch (type) {
     case "add": {
-      const newEntry = placeholders[state.content.title].entries;
+      const newEntry = placeholders[state.content.heading].entries;
       return {
         ...state,
         content: {
@@ -62,7 +62,7 @@ const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { typ
 export const EditorModalStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(editorModalStateReducer, {
     open: false,
-    content: { id: "", title: "Education", entries: [] },
+    content: { type: "Education", heading: "Education", entries: [] },
   });
 
   const openModalWithContent = (content: EditorModalState["content"]) => {

@@ -1,8 +1,8 @@
-import { ResumeEntry, Section, SectionTitle } from "../contexts/ResumeStateContext";
+import { SectionEntry, Section, SectionType } from "contexts/ResumeStateContext";
 
-export type ResumeEntryLabels = { [Key in keyof ResumeEntry as `${Key}Label`]: string };
+export type SectionEntryLabels = { [Key in keyof SectionEntry as `${Key}Label`]: string };
 
-export const entryLabels: Record<SectionTitle, ResumeEntryLabels> = {
+export const entryLabels: Record<SectionType, SectionEntryLabels> = {
   "Work Experience": {
     primaryInfoLabel: "Role",
     detailsLabel: "Responsibilities",
@@ -19,15 +19,22 @@ export const entryLabels: Record<SectionTitle, ResumeEntryLabels> = {
     secondaryInfoLabel: "Link",
     detailsLabel: "Achievements",
   },
+  Skills: {
+    // TODO: fix this
+    primaryInfoLabel: "Skill",
+    detailsLabel: "Skills",
+  },
 };
 
-export const placeholders: Record<SectionTitle, Section> = {
+export const placeholders: Record<SectionType, Section> = {
   "Work Experience": {
-    title: "Work Experience",
+    type: "Work Experience",
+    heading: "Work Experience",
     entries: [{ primaryInfo: "", details: ["", ""] }],
   },
   Education: {
-    title: "Education",
+    type: "Education",
+    heading: "Education",
     entries: [
       {
         primaryInfo: "",
@@ -38,7 +45,14 @@ export const placeholders: Record<SectionTitle, Section> = {
     ],
   },
   Projects: {
-    title: "Projects",
+    type: "Projects",
+    heading: "Projects",
     entries: [{ primaryInfo: "", details: ["", ""] }],
+  },
+  Skills: {
+    type: "Skills",
+    heading: "Skills",
+    // TODO: this should just be an array of skills, no primary info needed
+    entries: [{ primaryInfo: "", details: [""] }],
   },
 };

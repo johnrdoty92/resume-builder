@@ -1,20 +1,20 @@
 import { PropsWithChildren, createContext, useId } from "react";
-import { ResumeEntry, SectionTitle } from "contexts/ResumeStateContext";
-import { ResumeEntryLabels, entryLabels } from "constants/editorModal";
+import { SectionEntry, SectionType } from "contexts/ResumeStateContext";
+import { SectionEntryLabels, entryLabels } from "constants/editorModal";
 
 type EntryEditorContextValue = {
   id: string;
-  labels: ResumeEntryLabels;
-  entry: ResumeEntry;
+  labels: SectionEntryLabels;
+  entry: SectionEntry;
 };
 
-type EntryEditorProviderProps = PropsWithChildren<{ title: SectionTitle; entry: ResumeEntry }>;
+type EntryEditorProviderProps = PropsWithChildren<{ type: SectionType; entry: SectionEntry }>;
 
 export const EntryEditorContext = createContext<EntryEditorContextValue | null>(null);
 
-export const EntryEditorProvider = ({ children, title, entry }: EntryEditorProviderProps) => {
+export const EntryEditorProvider = ({ children, type: type, entry }: EntryEditorProviderProps) => {
   const id = useId();
-  const labels = entryLabels[title];
+  const labels = entryLabels[type];
   return (
     <EntryEditorContext.Provider value={{ id, labels, entry }}>
       <fieldset style={{ display: "flex", flexDirection: "column" }}>

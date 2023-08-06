@@ -9,7 +9,7 @@ export const AddModalEntry = () => {
 
   return (
     <Button type="button" onClick={handleClick}>
-      {`Add ${content.title} Item`}
+      {`Add ${content.heading} Item`}
     </Button>
   );
 };
