@@ -1,18 +1,17 @@
-import { placeholders } from "constants/editorModal";
-import { SectionType } from "contexts/ResumeStateContext";
+import { ResumeSection } from "contexts/ResumeStateContext";
 import { useEditorModalDispatch } from "contexts/hooks";
 import { Button } from "./Button";
 
 type AddSectionButtonProps = {
-  title: SectionType;
+  section: ResumeSection;
 };
 
-export const AddSectionButton = ({ title }: AddSectionButtonProps) => {
-  const { openModalWithContent } = useEditorModalDispatch();
+export const AddSectionButton = ({ section }: AddSectionButtonProps) => {
+  const { addNewSection } = useEditorModalDispatch();
 
   const handleClick = () => {
-    openModalWithContent({ ...placeholders[title] });
+    addNewSection(section);
   };
 
-  return <Button onClick={handleClick}>ADD {title} SECTION</Button>;
+  return <Button onClick={handleClick}>ADD {section} SECTION</Button>;
 };

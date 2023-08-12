@@ -1,87 +1,87 @@
-import { Reducer, createContext, useReducer } from "react";
-import { Section } from "./ResumeStateContext";
-import { placeholders } from "../constants/editorModal";
+import { Reducer, createContext, useMemo, useReducer } from "react";
+import { ResumeSection, ResumeState } from "./ResumeStateContext";
+import { PLACEHOLDER_DATA } from "constants/editorModal";
 
 export type EditorModalState = {
   open: boolean;
-  content: Section;
+  content: {
+    [Section in ResumeSection]: {
+      section: Section;
+    } & ResumeState[Section];
+  }[ResumeSection];
 };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
 
-type EditorModalDispatch = {
-  openModalWithContent: (content: EditorModalState["content"]) => void;
-  addModalEntry: () => void;
-  closeModal: () => void;
-};
-
-export const EditorModalDispatchContext = createContext<EditorModalDispatch | null>(null);
-
 type ACTION =
   | {
-      type: "open";
-      content: EditorModalState["content"];
+      type: "openWithContent";
+      payload: EditorModalState["content"];
     }
   // TODO: add "remove" dispatch to be called in the editor modal context
+  // payload should have ResumeSection, objectKey and index of item to remove
   | {
-      type: "add";
-      content?: never;
+      type: "addNewSection";
+      payload: ResumeSection;
     }
   | {
-      type: "close";
-      content?: never;
+      type: "setOpen";
+      payload: boolean;
     };
 
-const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { type, content }) => {
+type EditorModalDispatch = {
+  [Action in ACTION as Action["type"]]: (payload: Action["payload"]) => void;
+};
+
+const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { type, payload }) => {
   switch (type) {
-    case "add": {
-      const newEntry = placeholders[state.content.heading].entries;
-      return {
-        ...state,
-        content: {
-          ...state.content,
-          entries: [...state.content.entries, ...newEntry],
-        },
-      };
-    }
-    case "open": {
+    case "openWithContent": {
       return {
         open: true,
-        content,
+        content: payload,
       };
     }
-    case "close": {
+    case "addNewSection": {
+      return {
+        open: true,
+        content: PLACEHOLDER_DATA[payload],
+      };
+    }
+    case "setOpen": {
       return {
         ...state,
-        open: false,
+        open: payload,
       };
     }
   }
 };
 
+export const EditorModalDispatchContext = createContext<EditorModalDispatch | null>(null);
+
 export const EditorModalStateProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(editorModalStateReducer, {
     open: false,
-    content: { type: "Education", heading: "Education", entries: [] },
+    content: PLACEHOLDER_DATA["Work Experience"],
   });
 
-  const openModalWithContent = (content: EditorModalState["content"]) => {
-    dispatch({ type: "open", content });
-  };
-
-  const addModalEntry = () => {
-    dispatch({ type: "add" });
-  };
-
-  const closeModal = () => {
-    dispatch({ type: "close" });
-  };
+  const editorModalDispatch: EditorModalDispatch = useMemo(
+    () => ({
+      addNewSection(payload) {
+        dispatch({ payload, type: "addNewSection" });
+      },
+      setOpen(payload) {
+        dispatch({ payload, type: "setOpen" });
+      },
+      openWithContent(payload) {
+        dispatch({ payload, type: "openWithContent" });
+      },
+    }),
+    []
+  );
 
   return (
     <EditorModalStateContext.Provider value={state}>
-      <EditorModalDispatchContext.Provider
-        value={{ openModalWithContent, closeModal, addModalEntry }}
-      >
+      <EditorModalDispatchContext.Provider value={editorModalDispatch}>
         {children}
       </EditorModalDispatchContext.Provider>
     </EditorModalStateContext.Provider>

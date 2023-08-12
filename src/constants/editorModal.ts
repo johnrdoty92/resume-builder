@@ -1,59 +1,42 @@
-import { SectionEntry, Section, SectionType } from "contexts/ResumeStateContext";
+import { ResumeSection, ResumeState } from "contexts/ResumeStateContext";
 
-export type SectionEntryLabels = { [Key in keyof SectionEntry as `${Key}Label`]: string };
-
-export const entryLabels: Record<SectionType, SectionEntryLabels> = {
-  "Work Experience": {
-    primaryInfoLabel: "Role",
-    bulletPointsLabel: "Responsibilities",
-    dateLabel: "Dates",
-  },
-  Education: {
-    primaryInfoLabel: "Degree",
-    dateLabel: "Date of Completion",
-    bulletPointsLabel: "Location",
-    secondaryInfoLabel: "University / School",
-  },
-  Projects: {
-    primaryInfoLabel: "Project Title",
-    secondaryInfoLabel: "Link",
-    bulletPointsLabel: "Achievements",
-  },
-  Skills: {
-    // TODO: fix this
-    primaryInfoLabel: "Skill",
-    bulletPointsLabel: "Skills",
-  },
+type Placeholders = {
+  [Section in ResumeSection]: {
+    section: Section;
+    heading: string;
+    data: ResumeState[Section]["data"];
+  };
 };
 
-export const placeholders: Record<SectionType, Section> = {
-  "Work Experience": {
-    type: "Work Experience",
-    heading: "Work Experience",
-    entries: [{ primaryInfo: "", bulletPoints: [] }],
+export const PLACEHOLDER_DATA: Placeholders = {
+  Skills: {
+    section: "Skills",
+    heading: "Skills",
+    data: [],
   },
-  Education: {
-    type: "Education",
-    heading: "Education",
-    entries: [
-      {
-        primaryInfo: "",
-        date: [new Date(), "Current"],
-        secondaryInfo: ["", ""],
-        bulletPoints: [""],
-      },
-    ],
+  "Work Experience": {
+    section: "Work Experience",
+    heading: "Work Experience",
+    data: [{ role: "", responsibilities: [], company: "", dates: [new Date(), null] }],
   },
   Projects: {
-    type: "Projects",
+    section: "Projects",
     heading: "Projects",
-    entries: [{ primaryInfo: "", bulletPoints: [] }],
+    data: [{ accomplishments: [], name: "", url: "" }],
   },
-  Skills: {
-    type: "Skills",
-    heading: "Skills",
-    // TODO: this should just be an array of skills, no primary info needed
-    entries: [{ primaryInfo: "", bulletPoints: [""] }],
+  Education: {
+    section: "Education",
+    heading: "Education",
+    data: [
+      {
+        degreeOrCertificate: "",
+        institution: "",
+        dateOfCompletion: new Date(),
+        gpa: "",
+        location: "",
+        description: "",
+      },
+    ],
   },
 };
 

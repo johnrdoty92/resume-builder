@@ -1,85 +1,139 @@
-import { Reducer, createContext, useReducer } from "react";
-// TODO: create union of various types
-// TODO: remove secondaryInfo and add in "schoolInfo" and "skills" to respective SectionType
-export type SectionEntry = {
-  primaryInfo: string;
-  secondaryInfo?: string[];
-  date?: Date | [Date, Date | "Current"];
-  bulletPoints: string[];
+import { Reducer, createContext, useEffect, useMemo, useReducer } from "react";
+
+export type WorkExperience = {
+  role: string;
+  responsibilities: string[];
+  company: string;
+  location?: string;
+  dates: [Date, Date | null];
 };
 
-export type SectionType = "Work Experience" | "Education" | "Projects" | "Skills";
-
-// TODO: explicitly set "type" and use different entries types accordingly
-export type Section = {
-  type: SectionType;
-  heading: SectionType;
-  entries: SectionEntry[];
+export type Project = {
+  name: string;
+  url?: string;
+  accomplishments: string[];
 };
 
-type ResumeState = Partial<Record<SectionType, Section>>;
+export type Education = {
+  degreeOrCertificate: string;
+  institution: string;
+  dateOfCompletion: Date;
+  gpa?: string;
+  location?: string;
+  description?: string;
+};
+
+export type ResumeState = {
+  Skills: {
+    heading: string;
+    data: string[];
+  };
+  "Work Experience": {
+    heading: string;
+    data: WorkExperience[];
+  };
+  Projects: {
+    heading: string;
+    data: Project[];
+  };
+  Education: {
+    heading: string;
+    data: Education[];
+  };
+};
+
+export type ResumeSection = keyof ResumeState;
 
 type ACTION =
   | {
-      type: "SAVE_SECTION";
-      payload: { type: SectionType; sectionData: Section };
+      type: "saveChanges";
+      payload: {
+        [Section in ResumeSection]: {
+          section: Section;
+        } & ResumeState[Section];
+      }[ResumeSection];
     }
   | {
-      type: "DELETE_SECTION";
-      payload: SectionType;
+      type: "clearSection";
+      payload: ResumeSection;
     }
   | {
-      type: "RESET";
+      type: "clearAll";
       payload?: never;
     };
 
-const resumeStateReducer: Reducer<ResumeState, ACTION> = (state, { type, payload }) => {
+export const ResumeStateContext = createContext<Partial<ResumeState>>({});
+
+type ResumeDispatch = {
+  [Action in ACTION as Action["type"]]: Action["payload"] extends never
+    ? () => void
+    : (payload: Action["payload"]) => void;
+};
+
+export const ResumeDispatchContext = createContext<null | ResumeDispatch>(null);
+
+const resumeStateReducer: Reducer<Partial<ResumeState>, ACTION> = (state, { type, payload }) => {
   switch (type) {
-    case "SAVE_SECTION": {
-      const { type, sectionData } = payload;
+    case "saveChanges": {
+      const { section, data } = payload;
       return {
         ...state,
-        [type]: sectionData,
+        [section]: data,
       };
     }
-    case "DELETE_SECTION": {
-      const copy = { ...state };
-      if (!(payload in copy)) throw `Cannot delete nonexistent id ${payload}`;
-      delete copy[payload];
-      return copy;
+    case "clearSection": {
+      return {
+        ...state,
+        [payload]: undefined,
+      };
     }
-    case "RESET": {
+    case "clearAll": {
       return {};
     }
   }
 };
 
-export const ResumeStateContext = createContext<ResumeState>({});
+const localStorageKey = "resume-builder-app";
 
-type ResumeDispatch = {
-  saveSection(payload: { type: string; sectionData: Section }): void;
-  deleteSection(type: string): void;
+const initializeResumeState = () => {
+  const persisted = localStorage.getItem(localStorageKey);
+  try {
+    if (!persisted) throw "no persisted resume state";
+    const parsedState = JSON.parse(persisted);
+    return parsedState as ResumeState;
+  } catch (error) {
+    console.error(error);
+    const defaultState = {};
+    localStorage.setItem(localStorageKey, JSON.stringify(defaultState));
+    return defaultState;
+  }
 };
 
-export const ResumeDispatchContext = createContext<null | ResumeDispatch>(null);
-
 export const ResumeStateProvider = ({ children }: { children: React.ReactNode }) => {
-  // TODO: set initializer to fetch from localStorage
-  const [resumeState, dispatch] = useReducer(resumeStateReducer, {});
+  const [resumeState, dispatch] = useReducer(resumeStateReducer, initializeResumeState());
 
-  // TODO: useEffect that save changes to localStorage whenever resumeState changes
+  useEffect(() => {
+    localStorage.setItem(localStorageKey, JSON.stringify(resumeState));
+  }, [resumeState]);
 
-  const saveSection = (payload: { type: SectionType; sectionData: Section }) => {
-    dispatch({ type: "SAVE_SECTION", payload });
-  };
-
-  const deleteSection = (id: SectionType) => {
-    dispatch({ type: "DELETE_SECTION", payload: id });
-  };
+  const resumeDispatch: ResumeDispatch = useMemo(
+    () => ({
+      saveChanges(payload) {
+        dispatch({ type: "saveChanges", payload });
+      },
+      clearSection(payload) {
+        dispatch({ type: "clearSection", payload });
+      },
+      clearAll() {
+        dispatch({ type: "clearAll" });
+      },
+    }),
+    []
+  );
 
   return (
     <ResumeStateContext.Provider value={resumeState}>
-      <ResumeDispatchContext.Provider value={{ saveSection, deleteSection }}>
+      <ResumeDispatchContext.Provider value={resumeDispatch}>
         {children}
       </ResumeDispatchContext.Provider>
     </ResumeStateContext.Provider>

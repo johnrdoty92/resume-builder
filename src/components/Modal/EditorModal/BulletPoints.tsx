@@ -6,15 +6,14 @@ import {
   useRef,
   useState,
 } from "react";
-import { useEntryEditorContext } from "./EntryEditorContext/useEntryEditorContext";
 import { DELIMITER } from "constants/editorModal";
 
-type DetailEditorProps = {
+type BulletPointEditorProps = {
   detail: string;
   handleUpdate: (newValue?: string) => void;
 };
 
-const DetailEditor = ({ detail, handleUpdate }: DetailEditorProps) => {
+const BulletPointEditor = ({ detail, handleUpdate }: BulletPointEditorProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editableDetail, setEditableDetail] = useState(detail);
   const inputRef = useRef<ElementRef<"input">>(null);
@@ -69,9 +68,14 @@ const DetailEditor = ({ detail, handleUpdate }: DetailEditorProps) => {
   );
 };
 
-export const BulletPoints = () => {
-  const { id, entry, labels } = useEntryEditorContext();
-  const [details, setDetails] = useState(entry.bulletPoints);
+type BulletPointsProps = {
+  id: string;
+  bulletPoints: string[];
+  label: string;
+};
+
+export const BulletPoints = ({ id, bulletPoints, label }: BulletPointsProps) => {
+  const [details, setDetails] = useState(bulletPoints);
   const [currentDetail, setCurrentDetail] = useState("");
 
   const handleEnterKey: KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -87,22 +91,23 @@ export const BulletPoints = () => {
     setCurrentDetail("");
   };
 
-  const handleUpdateItem: (i: number) => DetailEditorProps["handleUpdate"] = (i) => (newValue) => {
-    setDetails((prev) => {
-      const copy = [...prev];
-      !newValue ? copy.splice(i, 1) : copy.splice(i, 1, newValue);
-      return copy;
-    });
-  };
+  const handleUpdateItem: (i: number) => BulletPointEditorProps["handleUpdate"] =
+    (i) => (newValue) => {
+      setDetails((prev) => {
+        const copy = [...prev];
+        !newValue ? copy.splice(i, 1) : copy.splice(i, 1, newValue);
+        return copy;
+      });
+    };
 
   return (
     <div>
-      <h6>{labels.bulletPointsLabel}</h6>
+      <h6>{label}</h6>
       {details.map((detail, i) => (
-        <DetailEditor key={detail} detail={detail} handleUpdate={handleUpdateItem(i)} />
+        <BulletPointEditor key={detail} detail={detail} handleUpdate={handleUpdateItem(i)} />
       ))}
       <label>
-        Add {labels.bulletPointsLabel}
+        Add {label}
         <input
           value={currentDetail}
           onChange={(e) => setCurrentDetail(e.target.value)}
