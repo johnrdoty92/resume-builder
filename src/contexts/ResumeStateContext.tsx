@@ -1,11 +1,14 @@
 import { Reducer, createContext, useEffect, useMemo, useReducer } from "react";
 
 export type WorkExperience = {
-  role: string;
+  jobTitle: string;
   responsibilities: string[];
   company: string;
   location?: string;
-  dates: [Date, Date | null];
+  dates: {
+    start: Date;
+    end: Date | null;
+  };
 };
 
 export type Project = {

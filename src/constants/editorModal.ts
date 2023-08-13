@@ -17,7 +17,9 @@ export const PLACEHOLDER_DATA: Placeholders = {
   "Work Experience": {
     section: "Work Experience",
     heading: "Work Experience",
-    data: [{ role: "", responsibilities: [], company: "", dates: [new Date(), null] }],
+    data: [
+      { jobTitle: "", responsibilities: [], company: "", dates: { start: new Date(), end: null } },
+    ],
   },
   Projects: {
     section: "Projects",

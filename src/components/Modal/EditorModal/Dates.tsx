@@ -21,17 +21,17 @@ type DatesProps = {
 
 export const Dates = ({ id, dates }: DatesProps) => {
   // TODO: create component that handles dates and secondary input as chip array, etc
-  const [date1, date2] = dates;
+  const { start, end } = dates;
   return (
     <>
       <h3>Dates</h3>
       <label>
         Start Date
-        <input type="date" name={`dates-${id}-1`} defaultValue={date1.toDateString()} />
+        <input type="date" name={`dates-${id}-1`} defaultValue={start.toDateString()} />
       </label>
       <label>
         End Date
-        <input type="date" name={`dates-${id}-2`} defaultValue={date2?.toDateString() ?? ""} />
+        <input type="date" name={`dates-${id}-2`} defaultValue={end?.toDateString() ?? ""} />
       </label>
     </>
   );

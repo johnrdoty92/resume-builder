@@ -3,40 +3,15 @@ import { Modal } from "../Modal";
 import { Button } from "components/Button/Button";
 import { WorkExperienceEditor } from "./Editors/WorkExperienceEditor";
 import { FormEventHandler } from "react";
-
-const ContentEditor = () => {
-  const { content } = useEditorModalState();
-
-  switch (content.section) {
-    case "Education": {
-      return <>{JSON.stringify(content.data)}</>;
-    }
-    case "Projects": {
-      return <>{JSON.stringify(content.data)}</>;
-    }
-    case "Work Experience": {
-      return (
-        <>
-          {content.data.map((d, i) => (
-            <WorkExperienceEditor key={i} experienceData={d} />
-          ))}
-        </>
-      );
-    }
-    case "Skills": {
-      return <>{JSON.stringify(content.data)}</>;
-    }
-    default: {
-      throw "invalid resume section";
-    }
-  }
-};
+import { EducationEditor } from "./Editors/EducationEditor";
+import { ProjectsEditor } from "./Editors/ProjectsEditor";
+import { SkillsEditor } from "./Editors/SkillsEditor";
 
 export const EditorModal = () => {
   const { setOpen } = useEditorModalDispatch();
   const { saveChanges } = useResumeDispatch();
   const { open, content } = useEditorModalState();
-  const { section, heading } = content;
+  const { section, heading, data } = content;
   const handleClose = () => setOpen(false);
 
   const handleSave: FormEventHandler<HTMLFormElement> = (e) => {
@@ -49,7 +24,22 @@ export const EditorModal = () => {
     <Modal open={open} setOpen={setOpen}>
       <form onSubmit={handleSave}>
         <h3>{section}</h3>
-        <ContentEditor />
+        {(() => {
+          switch (section) {
+            case "Work Experience": {
+              return data.map((d, i) => <WorkExperienceEditor key={i} data={d} />);
+            }
+            case "Education": {
+              return data.map((d, i) => <EducationEditor key={i} data={d} />);
+            }
+            case "Projects": {
+              return data.map((d, i) => <ProjectsEditor key={i} data={d} />);
+            }
+            case "Skills": {
+              return <SkillsEditor data={data} />;
+            }
+          }
+        })()}
         <Button type="submit">Save changes</Button>
         <Button type="button" onClick={handleClose}>
           Cancel

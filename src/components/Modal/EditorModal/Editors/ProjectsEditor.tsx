@@ -1,9 +1,9 @@
-import { Education } from "contexts/ResumeStateContext";
+import { Project } from "contexts/ResumeStateContext";
 import { useId } from "react";
 import { splitCamelCaseWords } from "utils/stringUtils";
-import { Date } from "../Dates";
+import { BulletPoints } from "../BulletPoints";
 
-export const EducationEditor = ({ data }: { data: Education }) => {
+export const ProjectsEditor = ({ data }: { data: Project }) => {
   const id = useId();
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1em" }}>
@@ -11,12 +11,12 @@ export const EducationEditor = ({ data }: { data: Education }) => {
         if (typeof value === "string") {
           return (
             <label key={key}>
-              <p>{splitCamelCaseWords(key)}</p>
+              {splitCamelCaseWords(key)}
               <input name={`${key}-${id}`} defaultValue={value} />
             </label>
           );
         } else {
-          return <Date key={key} id={id} date={value} />;
+          return <BulletPoints key={key} id={id} bulletPoints={value} label={key} />;
         }
       })}
     </div>

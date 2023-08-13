@@ -104,10 +104,14 @@ export const BulletPoints = ({ id, bulletPoints, label }: BulletPointsProps) => 
     <div>
       <h6>{label}</h6>
       {details.map((detail, i) => (
-        <BulletPointEditor key={detail} detail={detail} handleUpdate={handleUpdateItem(i)} />
+        <BulletPointEditor
+          key={`${detail}${i}`}
+          detail={detail}
+          handleUpdate={handleUpdateItem(i)}
+        />
       ))}
       <label>
-        Add {label}
+        {label}
         <input
           value={currentDetail}
           onChange={(e) => setCurrentDetail(e.target.value)}
@@ -117,7 +121,7 @@ export const BulletPoints = ({ id, bulletPoints, label }: BulletPointsProps) => 
           Add
         </button>
       </label>
-      <input hidden={true} value={details.join(DELIMITER)} name={`details-${id}`} readOnly />
+      <input hidden={true} value={details.join(DELIMITER)} name={`${label}-${id}`} readOnly />
     </div>
   );
 };
