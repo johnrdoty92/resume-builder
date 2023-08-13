@@ -5,7 +5,7 @@ import { Experience } from "./components/Sections/Experience/Experience";
 import { Header } from "./components/Header/Header";
 import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
 import { Section } from "./components/Sections/Section";
-import { AddSectionButton } from "./components/Button/AddSectionButton";
+import { EditSectionButton } from "./components/Button/EditSectionButton";
 import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
 import { useResumeState } from "./contexts/hooks";
 
@@ -64,26 +64,10 @@ function App() {
     >
       <Header name={header.name} details={{ email: header.email }} />
       <pre>{JSON.stringify(resumeState, null, 2)}</pre>
-      {/* TODO: Map out state from context. Be sure to add DragAndDrop around both arrays */}
-      {/* {state.map(([title, entries]) => (
-        <Section title={title}>
-          {entries.map((entry) => (
-            <ResumeEntry {...entry} />
-          ))}
-        </Section>
-      ))} */}
-      {/* <DragAndDrop nodes={nodes} /> */}
-      {/* <DragAndDrop
-        nodes={[
-          <Education key="education" entries={education} />,
-          <Experience key="experience" entries={experience} />,
-        ]}
-      /> */}
-      {/* TODO: group and style */}
-      <AddSectionButton section="Education" />
-      <AddSectionButton section="Work Experience" />
-      <AddSectionButton section="Projects" />
-      <AddSectionButton section="Skills" />
+      <EditSectionButton section="Education" />
+      <EditSectionButton section="Work Experience" />
+      <EditSectionButton section="Projects" />
+      <EditSectionButton section="Skills" />
       <EditorModal />
     </main>
   );

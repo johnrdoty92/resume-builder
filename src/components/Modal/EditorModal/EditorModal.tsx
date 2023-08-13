@@ -7,17 +7,30 @@ import { EducationEditor } from "./Editors/EducationEditor";
 import { ProjectsEditor } from "./Editors/ProjectsEditor";
 import { SkillsEditor } from "./Editors/SkillsEditor";
 
+const validateFormData = (formData: FormData) => {
+  const entryGroupById = new Map<string, {}>();
+  for (const [key, value] of formData.entries()) {
+    const [name, id] = key.split("-");
+    const entry = entryGroupById.get(id) ?? {};
+    entryGroupById.set(id, { ...entry, [name]: value });
+  }
+  // TODO: return the "data" object for saveChanges
+  console.log(entryGroupById);
+};
+
 export const EditorModal = () => {
   const { setOpen } = useEditorModalDispatch();
   const { saveChanges } = useResumeDispatch();
   const { open, content } = useEditorModalState();
   const { section, heading, data } = content;
+
   const handleClose = () => setOpen(false);
 
   const handleSave: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    // TODO: validate form data and dispatch changes
-    // saveChanges({section, heading, data: {}});
+    validateFormData(new FormData(e.currentTarget));
+    // saveChanges({ section, heading, data: {} });
+    setOpen(false);
   };
 
   return (
@@ -27,13 +40,13 @@ export const EditorModal = () => {
         {(() => {
           switch (section) {
             case "Work Experience": {
-              return data.map((d, i) => <WorkExperienceEditor key={i} data={d} />);
+              return <WorkExperienceEditor data={data} />;
             }
             case "Education": {
-              return data.map((d, i) => <EducationEditor key={i} data={d} />);
+              return <EducationEditor data={data} />;
             }
             case "Projects": {
-              return data.map((d, i) => <ProjectsEditor key={i} data={d} />);
+              return <ProjectsEditor data={data} />;
             }
             case "Skills": {
               return <SkillsEditor data={data} />;

@@ -18,11 +18,13 @@ type ACTION =
       type: "openWithContent";
       payload: EditorModalState["content"];
     }
-  // TODO: add "remove" dispatch to be called in the editor modal context
-  // payload should have ResumeSection, objectKey and index of item to remove
   | {
-      type: "addNewSection";
-      payload: ResumeSection;
+      type: "removeItemByIndex";
+      payload: number;
+    }
+  | {
+      type: "addItem";
+      payload?: never;
     }
   | {
       type: "setOpen";
@@ -30,7 +32,9 @@ type ACTION =
     };
 
 type EditorModalDispatch = {
-  [Action in ACTION as Action["type"]]: (payload: Action["payload"]) => void;
+  [Action in ACTION as Action["type"]]: Action["payload"] extends never | undefined
+    ? () => void
+    : (payload: Action["payload"]) => void;
 };
 
 const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { type, payload }) => {
@@ -41,11 +45,23 @@ const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { typ
         content: payload,
       };
     }
-    case "addNewSection": {
+    case "removeItemByIndex": {
+      const contentCopy = structuredClone(state.content);
+      contentCopy.data.splice(payload, 1);
       return {
-        open: true,
-        content: PLACEHOLDER_DATA[payload],
+        ...state,
+        content: contentCopy,
       };
+    }
+    case "addItem": {
+      const newEntry = PLACEHOLDER_DATA[state.content.section].data;
+      return {
+        ...state,
+        content: {
+          ...state.content,
+          data: [...state.content.data, ...newEntry],
+        },
+      } as EditorModalState;
     }
     case "setOpen": {
       return {
@@ -66,14 +82,17 @@ export const EditorModalStateProvider = ({ children }: { children: React.ReactNo
 
   const editorModalDispatch: EditorModalDispatch = useMemo(
     () => ({
-      addNewSection(payload) {
-        dispatch({ payload, type: "addNewSection" });
-      },
       setOpen(payload) {
         dispatch({ payload, type: "setOpen" });
       },
       openWithContent(payload) {
         dispatch({ payload, type: "openWithContent" });
+      },
+      removeItemByIndex(payload) {
+        dispatch({ payload, type: "removeItemByIndex" });
+      },
+      addItem() {
+        dispatch({ type: "addItem" });
       },
     }),
     []
