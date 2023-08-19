@@ -1,97 +1,67 @@
-import { Reducer, createContext, useEffect, useMemo, useReducer } from "react";
+import {
+  Dispatch,
+  DispatchWithoutAction,
+  Reducer,
+  createContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react";
+import { ResumeSection, ResumeState } from "types/resumeState";
 
-export type WorkExperience = {
-  jobTitle: string;
-  responsibilities: string[];
-  company: string;
-  location?: string;
-  dates: {
-    start: Date;
-    end: Date | null;
-  };
-};
-
-export type Project = {
-  name: string;
-  url?: string;
-  accomplishments: string[];
-};
-
-export type Education = {
-  degreeOrCertificate: string;
-  institution: string;
-  dateOfCompletion: Date;
-  gpa?: string;
-  location?: string;
-  description?: string;
-};
-
-export type ResumeState = {
-  Skills: {
-    heading: string;
-    data: string[];
-  };
+const DEFAULT_RESUME_STATE: ResumeState = {
   "Work Experience": {
-    heading: string;
-    data: WorkExperience[];
-  };
-  Projects: {
-    heading: string;
-    data: Project[];
-  };
+    heading: "Work Experience",
+    data: [],
+  },
   Education: {
-    heading: string;
-    data: Education[];
-  };
+    heading: "Education",
+    data: [],
+  },
+  Projects: {
+    heading: "Projects",
+    data: [],
+  },
+  Skills: {
+    heading: "Skills",
+    data: [],
+  },
 };
 
-export type ResumeSection = keyof ResumeState;
+export const ResumeStateContext = createContext<ResumeState>(DEFAULT_RESUME_STATE);
 
-type ACTION =
+type ResumeAction =
   | {
-      type: "saveChanges";
-      payload: {
-        [Section in ResumeSection]: {
-          section: Section;
-        } & ResumeState[Section];
-      }[ResumeSection];
+      type: "updateSectionTitle";
+      payload: { section: ResumeSection; value: string };
     }
   | {
-      type: "clearSection";
-      payload: ResumeSection;
-    }
-  | {
-      type: "clearAll";
+      type: "placeholder";
       payload?: never;
     };
 
-export const ResumeStateContext = createContext<Partial<ResumeState>>({});
-
 type ResumeDispatch = {
-  [Action in ACTION as Action["type"]]: Action["payload"] extends never
-    ? () => void
-    : (payload: Action["payload"]) => void;
+  [Action in ResumeAction as Action["type"]]: Action extends { payload?: never }
+    ? DispatchWithoutAction
+    : Dispatch<Action["payload"]>;
 };
 
 export const ResumeDispatchContext = createContext<null | ResumeDispatch>(null);
 
-const resumeStateReducer: Reducer<Partial<ResumeState>, ACTION> = (state, { type, payload }) => {
+const resumeStateReducer: Reducer<ResumeState, ResumeAction> = (state, { type, payload }) => {
   switch (type) {
-    case "saveChanges": {
-      const { section, data } = payload;
+    case "updateSectionTitle": {
+      const { section, value } = payload;
       return {
         ...state,
-        [section]: data,
+        [section]: {
+          ...state[section],
+          heading: value,
+        },
       };
     }
-    case "clearSection": {
-      return {
-        ...state,
-        [payload]: undefined,
-      };
-    }
-    case "clearAll": {
-      return {};
+    case "placeholder": {
+      return state;
     }
   }
 };
@@ -103,12 +73,12 @@ const initializeResumeState = () => {
   try {
     if (!persisted) throw "no persisted resume state";
     const parsedState = JSON.parse(persisted);
+    // TODO: validate parsed data as ResumeState
     return parsedState as ResumeState;
   } catch (error) {
     console.error(error);
-    const defaultState = {};
-    localStorage.setItem(localStorageKey, JSON.stringify(defaultState));
-    return defaultState;
+    localStorage.setItem(localStorageKey, JSON.stringify(DEFAULT_RESUME_STATE));
+    return DEFAULT_RESUME_STATE;
   }
 };
 
@@ -121,14 +91,11 @@ export const ResumeStateProvider = ({ children }: { children: React.ReactNode })
 
   const resumeDispatch: ResumeDispatch = useMemo(
     () => ({
-      saveChanges(payload) {
-        dispatch({ type: "saveChanges", payload });
+      updateSectionTitle(payload) {
+        dispatch({ type: "updateSectionTitle", payload });
       },
-      clearSection(payload) {
-        dispatch({ type: "clearSection", payload });
-      },
-      clearAll() {
-        dispatch({ type: "clearAll" });
+      placeholder() {
+        return;
       },
     }),
     []

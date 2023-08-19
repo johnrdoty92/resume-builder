@@ -1,11 +1,12 @@
-import { DragAndDrop } from "./components/DragAndDrop";
+// import { DragAndDrop } from "./components/DragAndDrop";
 // import classes from "./components/DragAndDrop.module.css";
-import { Education } from "./components/Sections/Education/Education";
-import { Experience } from "./components/Sections/Experience/Experience";
-import { Header } from "./components/Header/Header";
-import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
-import { Section } from "./components/Sections/Section";
-import { EditSectionButton } from "./components/Button/EditSectionButton";
+// import { Education } from "./components/Sections/Education/Education";
+// import { Experience } from "./components/Sections/Experience/Experience";
+// import { Header } from "./components/Header/Header";
+// import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
+// import { Section } from "./components/Sections/Section";
+import { SectionTitle } from "components/SectionTitle/SectionTitle";
+// import { EditSectionButton } from "./components/Button/EditSectionButton";
 import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
 import { useResumeState } from "./contexts/hooks";
 
@@ -18,39 +19,39 @@ import { useResumeState } from "./contexts/hooks";
 //   />
 // ));
 
-const SAMPLE_PROPS = {
-  header: {
-    name: "John Doe",
-    email: "name@email.com",
-  },
-  education: [
-    {
-      name: "Big University",
-      date: "2020",
-      location: "New York",
-      degreeOrCertificate: "BS in Science",
-    },
-    {
-      name: "Small College",
-      date: "2016",
-      location: "New York",
-      degreeOrCertificate: "BA in Something",
-    },
-  ],
-  experience: [
-    {
-      workplace: "Acme Inc",
-      role: "Customer Service",
-      location: "New York, USA",
-      dates: "Dec 2011 - Dec 2018",
-      bulletPoints: ["lorem ipsum", "lorem ipsum", "lorem ipsum", "lorem ipsum"],
-    },
-  ],
-  skills: {},
-};
+// const SAMPLE_PROPS = {
+//   header: {
+//     name: "John Doe",
+//     email: "name@email.com",
+//   },
+//   education: [
+//     {
+//       name: "Big University",
+//       date: "2020",
+//       location: "New York",
+//       degreeOrCertificate: "BS in Science",
+//     },
+//     {
+//       name: "Small College",
+//       date: "2016",
+//       location: "New York",
+//       degreeOrCertificate: "BA in Something",
+//     },
+//   ],
+//   experience: [
+//     {
+//       workplace: "Acme Inc",
+//       role: "Customer Service",
+//       location: "New York, USA",
+//       dates: "Dec 2011 - Dec 2018",
+//       bulletPoints: ["lorem ipsum", "lorem ipsum", "lorem ipsum", "lorem ipsum"],
+//     },
+//   ],
+//   skills: {},
+// };
 
 function App() {
-  const { header, education, experience } = SAMPLE_PROPS;
+  // const { header, education, experience } = SAMPLE_PROPS;
   const resumeState = useResumeState();
   return (
     <main
@@ -62,12 +63,12 @@ function App() {
         padding: "0.5in",
       }}
     >
-      <Header name={header.name} details={{ email: header.email }} />
+      {/* <Header name={header.name} details={{ email: header.email }} /> */}
+      <SectionTitle title="Skills" />
+      <SectionTitle title="Work Experience" />
+      <SectionTitle title="Projects" />
+      <SectionTitle title="Education" />
       <pre>{JSON.stringify(resumeState, null, 2)}</pre>
-      <EditSectionButton section="Education" />
-      <EditSectionButton section="Work Experience" />
-      <EditSectionButton section="Projects" />
-      <EditSectionButton section="Skills" />
       <EditorModal />
     </main>
   );

@@ -1,0 +1,11 @@
+.sectionTitle {
+    border-bottom: 1px solid black;
+    margin-bottom: 1rem;
+}
+
+.sectionTitle input {
+    width: 100%;
+    font-size: 13pt;
+    font-weight: bold;
+    border: none;
+}
