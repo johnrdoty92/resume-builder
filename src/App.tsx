@@ -12,6 +12,7 @@ import { useResumeState } from "./contexts/hooks";
 import { WorkExperience } from "components/Section/WorkExperience";
 import { Education } from "components/Section/Education";
 import { Projects } from "components/Section/Projects";
+import { Skills } from "components/Section/Skills";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
 // const nodes = HEIGHTS.map((height, i) => (
@@ -67,7 +68,7 @@ function App() {
       }}
     >
       {/* <Header name={header.name} details={{ email: header.email }} /> */}
-      <SectionTitle title="Skills" />
+      <Skills />
       <WorkExperience />
       <Projects />
       <Education />
