@@ -16,3 +16,15 @@ export const splitCamelCaseWords = (str: string) => {
   answer += lastWord.match(smallWords) ? lastWord : lastWord[0].toUpperCase() + lastWord.slice(1);
   return answer;
 };
+
+const dateOptions = [
+  "en-US",
+  {
+    year: "numeric",
+    month: "2-digit",
+  },
+] as const;
+
+export const getShortDate = (d: Date) => {
+  return d.toLocaleDateString(...dateOptions);
+};

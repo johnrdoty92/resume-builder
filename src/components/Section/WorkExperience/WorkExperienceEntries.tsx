@@ -1,18 +1,7 @@
 import { EditButton } from "components/Button/EditButton";
 import classes from "./WorkExperience.module.css";
 import { useResumeState } from "contexts/hooks";
-
-const dateOptions = [
-  "en-US",
-  {
-    year: "numeric",
-    month: "2-digit",
-  },
-] as const;
-
-const getShortDate = (d: Date) => {
-  return d.toLocaleDateString(...dateOptions);
-};
+import { getShortDate } from "utils/stringUtils";
 
 export const WorkExperienceEntries = () => {
   const { data } = useResumeState()["Work Experience"];

@@ -1,0 +1,15 @@
+.education {
+    position: relative;
+}
+
+.header {
+    display: flex;
+}
+
+.degreeOrCertificate {
+    font-weight: bolder;
+}
+
+.date {
+    margin-left: auto;
+}
