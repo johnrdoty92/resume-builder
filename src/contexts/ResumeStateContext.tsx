@@ -8,32 +8,26 @@ import {
   useReducer,
 } from "react";
 import { ResumeSection, ResumeState } from "types/resumeState";
-
-const DEFAULT_RESUME_STATE: ResumeState = {
-  "Work Experience": {
-    heading: "Work Experience",
-    data: [],
-  },
-  Education: {
-    heading: "Education",
-    data: [],
-  },
-  Projects: {
-    heading: "Projects",
-    data: [],
-  },
-  Skills: {
-    heading: "Skills",
-    data: [],
-  },
-};
+import { produce } from "immer";
+import { DEFAULT_RESUME_STATE } from "constants/defaults";
 
 export const ResumeStateContext = createContext<ResumeState>(DEFAULT_RESUME_STATE);
+
+type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : never;
 
 type ResumeAction =
   | {
       type: "updateSectionTitle";
       payload: { section: ResumeSection; value: string };
+    }
+  | {
+      type: "addDataEntry";
+      payload: {
+        [Section in ResumeSection]: {
+          section: Section;
+          data: FlattenArray<ResumeState[Section]["data"]>;
+        };
+      }[ResumeSection];
     }
   | {
       type: "placeholder";
@@ -49,21 +43,23 @@ type ResumeDispatch = {
 export const ResumeDispatchContext = createContext<null | ResumeDispatch>(null);
 
 const resumeStateReducer: Reducer<ResumeState, ResumeAction> = (state, { type, payload }) => {
-  switch (type) {
-    case "updateSectionTitle": {
-      const { section, value } = payload;
-      return {
-        ...state,
-        [section]: {
-          ...state[section],
-          heading: value,
-        },
-      };
+  return produce(state, (resumeDraft) => {
+    switch (type) {
+      case "updateSectionTitle": {
+        const { section, value } = payload;
+        resumeDraft[section].heading = value;
+        return resumeDraft;
+      }
+      case "addDataEntry": {
+        const { data, section } = payload;
+        (resumeDraft[section].data as (typeof data)[]).push(data);
+        return resumeDraft;
+      }
+      case "placeholder": {
+        return state;
+      }
     }
-    case "placeholder": {
-      return state;
-    }
-  }
+  });
 };
 
 const localStorageKey = "resume-builder-app";
@@ -93,6 +89,9 @@ export const ResumeStateProvider = ({ children }: { children: React.ReactNode })
     () => ({
       updateSectionTitle(payload) {
         dispatch({ type: "updateSectionTitle", payload });
+      },
+      addDataEntry(payload) {
+        dispatch({ type: "addDataEntry", payload });
       },
       placeholder() {
         return;
