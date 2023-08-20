@@ -11,6 +11,7 @@ import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
 import { useResumeState } from "./contexts/hooks";
 import { WorkExperience } from "components/Section/WorkExperience";
 import { Education } from "components/Section/Education";
+import { Projects } from "components/Section/Projects";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
 // const nodes = HEIGHTS.map((height, i) => (
@@ -68,7 +69,7 @@ function App() {
       {/* <Header name={header.name} details={{ email: header.email }} /> */}
       <SectionTitle title="Skills" />
       <WorkExperience />
-      <SectionTitle title="Projects" />
+      <Projects />
       <Education />
       <pre>{JSON.stringify(resumeState, null, 2)}</pre>
       <EditorModal />

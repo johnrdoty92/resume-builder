@@ -1,0 +1,16 @@
+.project {
+    position: relative;
+}
+
+.header {
+    display: flex;
+}
+
+.projectName {
+    font-weight: bolder;
+}
+
+.achievements {
+    margin-top: 0.5em;
+    margin-left: 1.5em;
+}
