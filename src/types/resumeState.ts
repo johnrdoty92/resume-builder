@@ -46,3 +46,12 @@ export type ResumeState = {
 };
 
 export type ResumeSection = keyof ResumeState;
+
+type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : never;
+
+export type SectionDataEntry = {
+  [Section in ResumeSection]: {
+    section: Section;
+    data: FlattenArray<ResumeState[Section]["data"]>;
+  };
+}[ResumeSection];

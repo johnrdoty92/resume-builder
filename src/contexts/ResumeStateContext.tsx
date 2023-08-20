@@ -7,13 +7,11 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import { ResumeSection, ResumeState } from "types/resumeState";
+import { ResumeSection, ResumeState, SectionDataEntry } from "types/resumeState";
 import { produce } from "immer";
-import { DEFAULT_RESUME_STATE } from "constants/defaults";
+import { DEFAULT_RESUME_STATE, DEV_DEFAULT_RESUME_STATE } from "constants/defaults";
 
 export const ResumeStateContext = createContext<ResumeState>(DEFAULT_RESUME_STATE);
-
-type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : never;
 
 type ResumeAction =
   | {
@@ -22,12 +20,7 @@ type ResumeAction =
     }
   | {
       type: "addDataEntry";
-      payload: {
-        [Section in ResumeSection]: {
-          section: Section;
-          data: FlattenArray<ResumeState[Section]["data"]>;
-        };
-      }[ResumeSection];
+      payload: SectionDataEntry;
     }
   | {
       type: "placeholder";
@@ -66,6 +59,10 @@ const localStorageKey = "resume-builder-app";
 
 const initializeResumeState = () => {
   const persisted = localStorage.getItem(localStorageKey);
+  if (import.meta.env.DEV) {
+    localStorage.setItem(localStorageKey, JSON.stringify(DEV_DEFAULT_RESUME_STATE));
+    return DEV_DEFAULT_RESUME_STATE;
+  }
   try {
     if (!persisted) throw "no persisted resume state";
     const parsedState = JSON.parse(persisted);

@@ -1,30 +1,25 @@
-import { Reducer, createContext, useMemo, useReducer } from "react";
-import { ResumeSection, ResumeState } from "./ResumeStateContext";
+import {
+  Dispatch,
+  DispatchWithoutAction,
+  Reducer,
+  createContext,
+  useMemo,
+  useReducer,
+} from "react";
 import { PLACEHOLDER_DATA } from "constants/editorModal";
+import { SectionDataEntry } from "types/resumeState";
 
 export type EditorModalState = {
   open: boolean;
-  content: {
-    [Section in ResumeSection]: {
-      section: Section;
-    } & ResumeState[Section];
-  }[ResumeSection];
+  content: SectionDataEntry;
 };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
 
-type ACTION =
+type EditorModalAction =
   | {
       type: "openWithContent";
       payload: EditorModalState["content"];
-    }
-  | {
-      type: "removeItemByIndex";
-      payload: number;
-    }
-  | {
-      type: "addItem";
-      payload?: never;
     }
   | {
       type: "setOpen";
@@ -32,36 +27,21 @@ type ACTION =
     };
 
 type EditorModalDispatch = {
-  [Action in ACTION as Action["type"]]: Action["payload"] extends never | undefined
-    ? () => void
-    : (payload: Action["payload"]) => void;
+  [Action in EditorModalAction as Action["type"]]: Action["payload"] extends never
+    ? DispatchWithoutAction
+    : Dispatch<Action["payload"]>;
 };
 
-const editorModalStateReducer: Reducer<EditorModalState, ACTION> = (state, { type, payload }) => {
+const editorModalStateReducer: Reducer<EditorModalState, EditorModalAction> = (
+  state,
+  { type, payload }
+) => {
   switch (type) {
     case "openWithContent": {
       return {
         open: true,
         content: payload,
       };
-    }
-    case "removeItemByIndex": {
-      const contentCopy = structuredClone(state.content);
-      contentCopy.data.splice(payload, 1);
-      return {
-        ...state,
-        content: contentCopy,
-      };
-    }
-    case "addItem": {
-      const newEntry = PLACEHOLDER_DATA[state.content.section].data;
-      return {
-        ...state,
-        content: {
-          ...state.content,
-          data: [...state.content.data, ...newEntry],
-        },
-      } as EditorModalState;
     }
     case "setOpen": {
       return {
@@ -87,12 +67,6 @@ export const EditorModalStateProvider = ({ children }: { children: React.ReactNo
       },
       openWithContent(payload) {
         dispatch({ payload, type: "openWithContent" });
-      },
-      removeItemByIndex(payload) {
-        dispatch({ payload, type: "removeItemByIndex" });
-      },
-      addItem() {
-        dispatch({ type: "addItem" });
       },
     }),
     []
