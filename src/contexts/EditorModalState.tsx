@@ -6,20 +6,25 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import { PLACEHOLDER_DATA } from "constants/editorModal";
 import { SectionDataEntry } from "types/resumeState";
+import { produce } from "immer";
 
-export type EditorModalState = {
-  open: boolean;
-  content: SectionDataEntry;
-};
+export type EditorModalState =
+  | {
+      open: true;
+      content: SectionDataEntry & { index: number };
+    }
+  | {
+      open: false;
+      content?: SectionDataEntry & { index: number };
+    };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
 
 type EditorModalAction =
   | {
       type: "openWithContent";
-      payload: EditorModalState["content"];
+      payload: NonNullable<EditorModalState["content"]>;
     }
   | {
       type: "setOpen";
@@ -36,29 +41,26 @@ const editorModalStateReducer: Reducer<EditorModalState, EditorModalAction> = (
   state,
   { type, payload }
 ) => {
-  switch (type) {
-    case "openWithContent": {
-      return {
-        open: true,
-        content: payload,
-      };
+  return produce(state, (modalStateDraft) => {
+    switch (type) {
+      case "openWithContent": {
+        return {
+          open: true,
+          content: payload,
+        };
+      }
+      case "setOpen": {
+        modalStateDraft.open = payload;
+        return modalStateDraft;
+      }
     }
-    case "setOpen": {
-      return {
-        ...state,
-        open: payload,
-      };
-    }
-  }
+  });
 };
 
 export const EditorModalDispatchContext = createContext<EditorModalDispatch | null>(null);
 
 export const EditorModalStateProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(editorModalStateReducer, {
-    open: false,
-    content: PLACEHOLDER_DATA["Work Experience"],
-  });
+  const [state, dispatch] = useReducer(editorModalStateReducer, { open: false });
 
   const editorModalDispatch: EditorModalDispatch = useMemo(
     () => ({
