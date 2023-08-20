@@ -20,7 +20,7 @@ export const ProjectEntries = () => {
                 return <li key={`${a}${i}`}>{a}</li>;
               })}
             </ul>
-            <EditButton index={i} sectionData={{ section: "Projects", data: project }} />
+            <EditButton index={i} data={project} section="Projects" />
           </div>
         );
       })}

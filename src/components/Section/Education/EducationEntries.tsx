@@ -21,7 +21,7 @@ export const EducationEntries = () => {
               <p className={classes.date}>{getShortDate(dateOfCompletion)}</p>
             </div>
             <p>{description}</p>
-            <EditButton index={i} sectionData={{ section: "Education", data: education }} />
+            <EditButton index={i} data={education} section="Education" />
           </div>
         );
       })}

@@ -52,6 +52,10 @@ type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : never;
 export type SectionDataEntry = {
   [Section in ResumeSection]: {
     section: Section;
-    data: FlattenArray<ResumeState[Section]["data"]>;
+    data: Section extends "Skills" ? string[] : FlattenArray<ResumeState[Section]["data"]>;
   };
 }[ResumeSection];
+
+export type SectionUpdatePayload =
+  | (Exclude<SectionDataEntry, { section: "Skills" }> & { index: number })
+  | (Extract<SectionDataEntry, { section: "Skills" }> & { index?: undefined });

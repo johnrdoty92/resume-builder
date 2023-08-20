@@ -1,17 +1,15 @@
 import { useEditorModalDispatch } from "contexts/hooks";
 import { Button } from "./Button";
-import { SectionDataEntry } from "types/resumeState";
+import { SectionUpdatePayload } from "types/resumeState";
 import { ComponentProps } from "react";
 
-type EditButtonProps = { sectionData: SectionDataEntry; index: number } & ComponentProps<
-  typeof Button
->;
+type EditButtonProps = SectionUpdatePayload & { buttonProps?: ComponentProps<typeof Button> };
 
-export const EditButton = ({ sectionData, index, style, ...buttonProps }: EditButtonProps) => {
+export const EditButton = ({ buttonProps, ...payload }: EditButtonProps) => {
   const { openWithContent } = useEditorModalDispatch();
 
   const handleClick = () => {
-    openWithContent({ ...sectionData, index });
+    openWithContent(payload);
   };
 
   return (
@@ -23,7 +21,7 @@ export const EditButton = ({ sectionData, index, style, ...buttonProps }: EditBu
         transform: "translateY(-50%)",
         top: "50%",
         left: "-10%",
-        ...style,
+        ...buttonProps?.style,
       }}
     >
       Edit

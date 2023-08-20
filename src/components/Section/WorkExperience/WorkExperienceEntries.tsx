@@ -25,7 +25,7 @@ export const WorkExperienceEntries = () => {
                 return <li key={`${r}${i}`}>{r}</li>;
               })}
             </ul>
-            <EditButton index={i} sectionData={{ section: "Work Experience", data: experience }} />
+            <EditButton index={i} data={experience} section="Work Experience" />
           </div>
         );
       })}

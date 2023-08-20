@@ -6,17 +6,17 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import { SectionDataEntry } from "types/resumeState";
+import { SectionUpdatePayload } from "types/resumeState";
 import { produce } from "immer";
 
 export type EditorModalState =
   | {
       open: true;
-      content: SectionDataEntry & { index: number };
+      content: SectionUpdatePayload;
     }
   | {
       open: false;
-      content?: SectionDataEntry & { index: number };
+      content?: SectionUpdatePayload;
     };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
@@ -24,7 +24,7 @@ export const EditorModalStateContext = createContext<EditorModalState | null>(nu
 type EditorModalAction =
   | {
       type: "openWithContent";
-      payload: NonNullable<EditorModalState["content"]>;
+      payload: SectionUpdatePayload;
     }
   | {
       type: "setOpen";

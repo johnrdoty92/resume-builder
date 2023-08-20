@@ -7,7 +7,12 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import { ResumeSection, ResumeState, SectionDataEntry } from "types/resumeState";
+import {
+  ResumeSection,
+  ResumeState,
+  SectionDataEntry,
+  SectionUpdatePayload,
+} from "types/resumeState";
 import { produce } from "immer";
 import { DEFAULT_RESUME_STATE, DEV_DEFAULT_RESUME_STATE } from "constants/defaults";
 
@@ -24,7 +29,7 @@ type ResumeAction =
     }
   | {
       type: "updateDataEntry";
-      payload: SectionDataEntry & { index: number };
+      payload: SectionUpdatePayload;
     }
   | {
       type: "placeholder";
@@ -49,11 +54,18 @@ const resumeStateReducer: Reducer<ResumeState, ResumeAction> = (state, { type, p
       }
       case "addDataEntry": {
         const { data, section } = payload;
+        if (section === "Skills") {
+          resumeDraft[section].data = data;
+        }
         (resumeDraft[section].data as (typeof data)[]).push(data);
         return resumeDraft;
       }
       case "updateDataEntry": {
         const { data, index, section } = payload;
+        if (section === "Skills") {
+          resumeDraft[section].data = data;
+          return resumeDraft;
+        }
         if (!resumeDraft[section].data[index]) throw `Index ${index} does not exist in ${section}`;
         (resumeDraft[section].data as (typeof data)[]).splice(index, 1, data);
         return resumeDraft;
