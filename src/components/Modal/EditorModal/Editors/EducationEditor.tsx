@@ -1,38 +1,58 @@
-import { Education } from "contexts/ResumeStateContext";
-import { splitCamelCaseWords } from "utils/stringUtils";
-import { Date } from "../Dates";
-import { Fragment } from "react";
 import { Button } from "components/Button/Button";
-import { useEditorModalDispatch } from "contexts/hooks";
+import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
+import { produce } from "immer";
+import { ChangeEvent, useState } from "react";
+import { Education } from "types/resumeState";
 
-export const EducationEditor = ({ data }: { data: Education[] }) => {
-  const { removeItemByIndex, addItem } = useEditorModalDispatch();
+export const EducationEditor = ({ data, index }: { data: Education; index: number }) => {
+  const { updateDataEntry } = useResumeDispatch();
+  const { setOpen } = useEditorModalDispatch();
+  const [education, setEducation] = useState<Education>(data);
+  const { dateOfCompletion, degreeOrCertificate, institution, description, gpa, location } =
+    education;
+
+  const handleChange = (key: keyof Education) => (e: ChangeEvent<HTMLInputElement>) => {
+    setEducation(
+      produce((draftProject) => {
+        if (key === "dateOfCompletion") {
+          // TODO: handle date of completion
+          return;
+        }
+        draftProject[key] = e.target.value;
+        return draftProject;
+      })
+    );
+  };
+
+  const handleSave = () => {
+    updateDataEntry({ data: education, section: "Education", index });
+    setOpen(false);
+  };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1em" }}>
-      {data.map((education, i) => (
-        <Fragment key={i}>
-          {Object.entries(education).map(([key, value]) => {
-            const id = `education${i}`;
-            if (typeof value === "string") {
-              return (
-                <label key={key}>
-                  <p>{splitCamelCaseWords(key)}</p>
-                  <input name={`${key}-${id}`} defaultValue={value} />
-                </label>
-              );
-            } else {
-              return <Date key={key} id={id} date={value} />;
-            }
-          })}
-          <Button type="button" onClick={() => removeItemByIndex(i)}>
-            Remove
-          </Button>
-        </Fragment>
-      ))}
-      <Button type="button" onClick={addItem}>
-        Add Entry
-      </Button>
+    <div>
+      <label>
+        Degree
+        <input onChange={handleChange("degreeOrCertificate")} value={degreeOrCertificate} />
+      </label>
+      <label>
+        Institution
+        <input onChange={handleChange("institution")} value={institution} />
+      </label>
+      <label>
+        Location
+        <input onChange={handleChange("location")} value={location ?? ""} />
+      </label>
+      <label>
+        GPA
+        <input onChange={handleChange("gpa")} value={gpa ?? ""} />
+      </label>
+      <label>
+        Description
+        <input onChange={handleChange("description")} value={description ?? ""} />
+      </label>
+      {/* TODO: date */}
+      <Button onClick={handleSave}>Save</Button>
     </div>
   );
 };

@@ -1,38 +1,45 @@
-import { Project } from "contexts/ResumeStateContext";
-import { splitCamelCaseWords } from "utils/stringUtils";
-import { BulletPoints } from "../BulletPoints";
-import { Fragment } from "react";
 import { Button } from "components/Button/Button";
-import { useEditorModalDispatch } from "contexts/hooks";
+import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
+import { produce } from "immer";
+import { ChangeEvent, useState } from "react";
+import { Project } from "types/resumeState";
 
-export const ProjectsEditor = ({ data }: { data: Project[] }) => {
-  const { removeItemByIndex, addItem } = useEditorModalDispatch();
+export const ProjectsEditor = ({ data, index }: { data: Project; index: number }) => {
+  const { updateDataEntry } = useResumeDispatch();
+  const { setOpen } = useEditorModalDispatch();
+  const [project, setProject] = useState<Project>(data);
+  const { accomplishments, name, url } = project;
+
+  const handleChange = (key: keyof Project) => (e: ChangeEvent<HTMLInputElement>) => {
+    setProject(
+      produce((draftProject) => {
+        if (key === "accomplishments") {
+          // TODO: handle accomplishments
+          return;
+        }
+        draftProject[key] = e.target.value;
+        return draftProject;
+      })
+    );
+  };
+
+  const handleSave = () => {
+    updateDataEntry({ data: project, section: "Projects", index });
+    setOpen(false);
+  };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1em" }}>
-      {data.map((project, i) => (
-        <Fragment key={i}>
-          {Object.entries(project).map(([key, value]) => {
-            const id = `project${i}`;
-            if (typeof value === "string") {
-              return (
-                <label key={key}>
-                  {splitCamelCaseWords(key)}
-                  <input name={`${key}-${id}`} defaultValue={value} />
-                </label>
-              );
-            } else {
-              return <BulletPoints key={key} id={id} bulletPoints={value} label={key} />;
-            }
-          })}
-          <Button type="button" onClick={() => removeItemByIndex(i)}>
-            Remove
-          </Button>
-        </Fragment>
-      ))}
-      <Button type="button" onClick={addItem}>
-        Add Entry
-      </Button>
+    <div>
+      <label>
+        Project Name
+        <input onChange={handleChange("name")} value={name} />
+      </label>
+      <label>
+        URL
+        <input onChange={handleChange("url")} value={url ?? ""} />
+      </label>
+      {/* TODO: acheivements */}
+      <Button onClick={handleSave}>Save</Button>
     </div>
   );
 };
