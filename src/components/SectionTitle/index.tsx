@@ -6,11 +6,11 @@ export const SectionTitle = ({ title }: { title: ResumeSection }) => {
   const resumeState = useResumeState();
   const { updateSectionTitle } = useResumeDispatch();
   return (
-    <div className={classes.sectionTitle}>
+    <h2 className={classes.sectionTitle}>
       <input
         defaultValue={resumeState[title].heading}
         onChange={(e) => updateSectionTitle({ section: title, value: e.target.value })}
       />
-    </div>
+    </h2>
   );
 };

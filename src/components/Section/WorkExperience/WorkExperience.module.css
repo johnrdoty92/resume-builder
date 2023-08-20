@@ -1,0 +1,20 @@
+.workExperience {
+    position: relative;
+}
+
+.header {
+    display: flex;
+}
+
+.jobTitle {
+    font-weight: bolder;
+}
+
+.dates {
+    margin-left: auto;
+}
+
+.responsibilities {
+    margin-top: 0.5em;
+    margin-left: 1.5em;
+}

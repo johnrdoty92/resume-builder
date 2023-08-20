@@ -23,6 +23,10 @@ type ResumeAction =
       payload: SectionDataEntry;
     }
   | {
+      type: "updateDataEntry";
+      payload: SectionDataEntry & { index: number };
+    }
+  | {
       type: "placeholder";
       payload?: never;
     };
@@ -46,6 +50,12 @@ const resumeStateReducer: Reducer<ResumeState, ResumeAction> = (state, { type, p
       case "addDataEntry": {
         const { data, section } = payload;
         (resumeDraft[section].data as (typeof data)[]).push(data);
+        return resumeDraft;
+      }
+      case "updateDataEntry": {
+        const { data, index, section } = payload;
+        if (!resumeDraft[section].data[index]) throw `Index ${index} does not exist in ${section}`;
+        (resumeDraft[section].data as (typeof data)[]).splice(index, 1, data);
         return resumeDraft;
       }
       case "placeholder": {
@@ -89,6 +99,9 @@ export const ResumeStateProvider = ({ children }: { children: React.ReactNode })
       },
       addDataEntry(payload) {
         dispatch({ type: "addDataEntry", payload });
+      },
+      updateDataEntry(payload) {
+        dispatch({ type: "updateDataEntry", payload });
       },
       placeholder() {
         return;

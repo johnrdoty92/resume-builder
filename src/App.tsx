@@ -5,10 +5,11 @@
 // import { Header } from "./components/Header/Header";
 // import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
 // import { Section } from "./components/Sections/Section";
-import { SectionTitle } from "components/SectionTitle/SectionTitle";
+import { SectionTitle } from "components/SectionTitle";
 // import { EditSectionButton } from "./components/Button/EditSectionButton";
 import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
 import { useResumeState } from "./contexts/hooks";
+import { WorkExperience } from "components/Section/WorkExperience";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
 // const nodes = HEIGHTS.map((height, i) => (
@@ -65,7 +66,7 @@ function App() {
     >
       {/* <Header name={header.name} details={{ email: header.email }} /> */}
       <SectionTitle title="Skills" />
-      <SectionTitle title="Work Experience" />
+      <WorkExperience />
       <SectionTitle title="Projects" />
       <SectionTitle title="Education" />
       <pre>{JSON.stringify(resumeState, null, 2)}</pre>
