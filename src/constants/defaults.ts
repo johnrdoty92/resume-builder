@@ -1,4 +1,31 @@
-import { ResumeState } from "types/resumeState";
+import { ResumeSection, ResumeState, SectionDataBlankDefault } from "types/resumeState";
+
+export const BLANK_SECTIONS: { [Section in ResumeSection]: SectionDataBlankDefault<Section> } = {
+  "Work Experience": {
+    company: "",
+    dates: {
+      start: new Date(),
+      end: null,
+    },
+    jobTitle: "",
+    responsibilities: [],
+    location: "",
+  },
+  Education: {
+    dateOfCompletion: new Date(),
+    degreeOrCertificate: "",
+    institution: "",
+    description: "",
+    gpa: "",
+    location: "",
+  },
+  Projects: {
+    accomplishments: [],
+    name: "",
+    url: "",
+  },
+  Skills: [],
+};
 
 export const DEFAULT_RESUME_STATE: ResumeState = {
   "Work Experience": {

@@ -59,3 +59,8 @@ export type SectionDataEntry = {
 export type SectionUpdatePayload =
   | (Exclude<SectionDataEntry, { section: "Skills" }> & { index: number })
   | (Extract<SectionDataEntry, { section: "Skills" }> & { index?: undefined });
+
+export type SectionDataBlankDefault<T extends ResumeSection> = Extract<
+  SectionDataEntry,
+  { section: T }
+>["data"];
