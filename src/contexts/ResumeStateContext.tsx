@@ -50,9 +50,7 @@ const resumeStateReducer: Reducer<ResumeState, ResumeAction> = (state, { type, p
       }
       case "addDataEntry": {
         const { data, section } = payload;
-        if (section === "Skills") {
-          resumeDraft[section].data = data;
-        }
+        if (section === "Skills") return resumeDraft;
         (resumeDraft[section].data as (typeof data)[]).push(data);
         return resumeDraft;
       }

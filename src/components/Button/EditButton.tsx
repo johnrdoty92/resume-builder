@@ -2,6 +2,7 @@ import { useEditorModalDispatch } from "contexts/hooks";
 import { Button } from "./Button";
 import { SectionUpdatePayload } from "types/resumeState";
 import { ComponentProps } from "react";
+import classes from "./Button.module.css";
 
 type EditButtonProps = SectionUpdatePayload & { buttonProps?: ComponentProps<typeof Button> };
 
@@ -13,17 +14,7 @@ export const EditButton = ({ buttonProps, ...payload }: EditButtonProps) => {
   };
 
   return (
-    <Button
-      {...buttonProps}
-      onClick={handleClick}
-      style={{
-        position: "absolute",
-        transform: "translateY(-50%)",
-        top: "50%",
-        left: "-10%",
-        ...buttonProps?.style,
-      }}
-    >
+    <Button {...buttonProps} className={classes.editButton} onClick={handleClick}>
       Edit
     </Button>
   );

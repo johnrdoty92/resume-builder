@@ -14,3 +14,16 @@
     color: rgb(19, 29, 104);
     cursor: pointer;
 }
+
+.addDataEntryButton {
+    position: absolute;
+    top: 0;
+    left: -10%;
+}
+
+.editButton {
+    position: absolute;
+    transform: translateY(-50%);
+    top: 50%;
+    left: -10%;
+}
