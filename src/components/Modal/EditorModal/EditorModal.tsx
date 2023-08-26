@@ -4,6 +4,7 @@ import { Button } from "components/Button/Button";
 import { WorkExperienceEditor } from "./Editors/WorkExperienceEditor";
 import { EducationEditor } from "./Editors/EducationEditor";
 import { ProjectsEditor } from "./Editors/ProjectsEditor";
+import { RemoveDataEntryButton } from "components/Button/RemoveDataEntryButton";
 
 export const EditorModal = () => {
   const { setOpen } = useEditorModalDispatch();
@@ -32,6 +33,11 @@ export const EditorModal = () => {
           // case "Skills":
         }
       })()}
+      {content?.section && content?.index !== undefined ? (
+        <RemoveDataEntryButton section={content.section} index={content.index}>
+          Remove Entry
+        </RemoveDataEntryButton>
+      ) : null}
       <Button onClick={handleClose}>Cancel</Button>
     </Modal>
   );

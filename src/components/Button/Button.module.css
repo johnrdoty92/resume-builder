@@ -27,3 +27,7 @@
     top: 50%;
     left: -10%;
 }
+
+.removeDataEntryButton {
+    position: absolute;
+}
