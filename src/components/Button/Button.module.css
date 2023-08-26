@@ -15,6 +15,18 @@
     cursor: pointer;
 }
 
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgb(97, 142, 255);
+    padding: 4px 8px;
+    color: white;
+    border-radius: 16px;
+    border: none;
+    transition: all 250ms ease;
+}
+
 .addDataEntryButton {
     position: absolute;
     top: 0;

@@ -5,6 +5,7 @@ import { WorkExperienceEditor } from "./Editors/WorkExperienceEditor";
 import { EducationEditor } from "./Editors/EducationEditor";
 import { ProjectsEditor } from "./Editors/ProjectsEditor";
 import { RemoveDataEntryButton } from "components/Button/RemoveDataEntryButton";
+import { SkillsEditor } from "./Editors/SkillsEditor";
 
 export const EditorModal = () => {
   const { setOpen } = useEditorModalDispatch();
@@ -14,7 +15,6 @@ export const EditorModal = () => {
 
   return (
     <Modal open={open} setOpen={setOpen}>
-      <pre>{JSON.stringify(content, null, 2)}</pre>
       {(() => {
         if (!content) return null;
         switch (content.section) {
@@ -30,7 +30,9 @@ export const EditorModal = () => {
             const { data, index } = content;
             return <ProjectsEditor data={data} index={index} />;
           }
-          // case "Skills":
+          case "Skills": {
+            return <SkillsEditor />;
+          }
         }
       })()}
       {content?.section && content?.index !== undefined ? (

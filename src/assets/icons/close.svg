@@ -1,0 +1,31 @@
+<svg version="1.1" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        circle {
+            transition: 250ms ease all;
+            fill: #cacaca;
+        }
+
+        circle:hover {
+            cursor: pointer;
+            fill: #999999;
+        }
+
+        circle:active {
+            transition: 50ms ease all;
+            fill: #4f4f4f;
+        }
+
+        line {
+            pointer-events: none;
+            transition: 250ms ease all;
+            stroke: white;
+            stroke-linecap: round;
+            stroke-width: 2.5px;
+        }
+    </style>
+    <g>
+        <circle cx="10" cy="10" r="10" />
+        <line x1="6" y1="6" x2="14" y2="14" />
+        <line x1="6" y1="14" x2="14" y2="6" />
+    </g>
+</svg>

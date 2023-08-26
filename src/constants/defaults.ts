@@ -24,7 +24,7 @@ export const BLANK_SECTIONS: { [Section in ResumeSection]: SectionDataBlankDefau
     name: "",
     url: "",
   },
-  Skills: [],
+  Skills: '',
 };
 
 export const DEFAULT_RESUME_STATE: ResumeState = {

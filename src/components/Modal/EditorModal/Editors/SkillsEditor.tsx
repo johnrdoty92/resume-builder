@@ -1,19 +1,31 @@
 import { Button } from "components/Button/Button";
-import { DELIMITER } from "constants/editorModal";
+import { Chip } from "components/Button/Chip";
+import { useResumeDispatch, useResumeState } from "contexts/hooks";
 import { KeyboardEventHandler, useState } from "react";
+import { ReactComponent as CloseIcon } from "assets/icons/close.svg";
 
-export const SkillsEditor = ({ data }: { data: string[] }) => {
-  const [skills, setSkills] = useState(data);
+const SkillChip = ({ skill, index }: { skill: string; index: number }) => {
+  const { removeDataEntry } = useResumeDispatch();
+
+  const handleClick = () => removeDataEntry({ section: "Skills", index });
+
+  return (
+    <Chip onClick={handleClick}>
+      {skill}
+      <CloseIcon />
+    </Chip>
+  );
+};
+
+export const SkillsEditor = () => {
+  const {
+    Skills: { data: skills },
+  } = useResumeState();
+  const { addDataEntry } = useResumeDispatch();
   const [currentValue, setCurrentValue] = useState("");
 
-  const removeSkill = (index: number) => {
-    const skillsCopy = [...skills];
-    skillsCopy.splice(index, 1);
-    setSkills(skillsCopy);
-  };
-
   const saveCurrentSkill = () => {
-    setSkills((prev) => [...prev, currentValue]);
+    addDataEntry({ section: "Skills", data: currentValue });
     setCurrentValue("");
   };
 
@@ -28,11 +40,7 @@ export const SkillsEditor = ({ data }: { data: string[] }) => {
     <>
       <div style={{ display: "flex", gap: "0.5em" }}>
         {skills.map((skill, i) => (
-          <div style={{ backgroundColor: "lightgray" }} key={`${skill}${i}`}>
-            <p>
-              {skill} <span onClick={() => removeSkill(i)}>X</span>
-            </p>
-          </div>
+          <SkillChip key={`${skill}${i}`} index={i} skill={skill} />
         ))}
       </div>
       <input
@@ -43,7 +51,6 @@ export const SkillsEditor = ({ data }: { data: string[] }) => {
       <Button type="button" disabled={!currentValue} onClick={saveCurrentSkill}>
         Add Skill
       </Button>
-      <input hidden={true} value={skills.join(DELIMITER)} name="skills" readOnly />
     </>
   );
 };

@@ -52,7 +52,7 @@ type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : never;
 export type SectionDataEntry = {
   [Section in ResumeSection]: {
     section: Section;
-    data: Section extends "Skills" ? string[] : FlattenArray<ResumeState[Section]["data"]>;
+    data: FlattenArray<ResumeState[Section]["data"]>;
   };
 }[ResumeSection];
 

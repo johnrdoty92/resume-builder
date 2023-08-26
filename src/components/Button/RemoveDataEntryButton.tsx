@@ -1,6 +1,6 @@
 import { ComponentProps } from "react";
 import { Button } from "./Button";
-import { useResumeDispatch } from "contexts/hooks";
+import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
 import { ResumeSection } from "types/resumeState";
 import classes from "./Button.module.css";
 
@@ -15,9 +15,11 @@ export const RemoveDataEntryButton = ({
   ...buttonProps
 }: RemoveDataEntryButtonProps) => {
   const { removeDataEntry } = useResumeDispatch();
+  const { setOpen } = useEditorModalDispatch();
 
   const handleClick = () => {
     removeDataEntry({ section, index });
+    setOpen(false);
   };
 
   return (

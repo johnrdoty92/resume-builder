@@ -5,10 +5,10 @@
 // import { Header } from "./components/Header/Header";
 // import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
 // import { Section } from "./components/Sections/Section";
-import { SectionTitle } from "components/SectionTitle";
+// import { SectionTitle } from "components/SectionTitle";
 // import { EditSectionButton } from "./components/Button/EditSectionButton";
 import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
-import { useResumeState } from "./contexts/hooks";
+// import { useResumeState } from "./contexts/hooks";
 import { WorkExperience } from "components/Section/WorkExperience";
 import { Education } from "components/Section/Education";
 import { Projects } from "components/Section/Projects";
@@ -56,7 +56,6 @@ import { Skills } from "components/Section/Skills";
 
 function App() {
   // const { header, education, experience } = SAMPLE_PROPS;
-  const resumeState = useResumeState();
   return (
     <main
       style={{
@@ -72,7 +71,6 @@ function App() {
       <WorkExperience />
       <Projects />
       <Education />
-      <pre>{JSON.stringify(resumeState, null, 2)}</pre>
       <EditorModal />
     </main>
   );
