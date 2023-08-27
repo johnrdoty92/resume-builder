@@ -30,6 +30,10 @@ export const BLANK_SECTIONS: { [Section in ResumeSection]: SectionDataBlankDefau
 export const DEFAULT_RESUME_STATE: ResumeState = {
   Header: {
     name: "Name",
+    address: undefined,
+    email: undefined,
+    phone: undefined,
+    socialMedia: undefined,
   },
   "Work Experience": {
     heading: "Work Experience",
@@ -54,6 +58,8 @@ export const DEV_DEFAULT_RESUME_STATE: ResumeState = {
     name: "John Doe",
     email: "john@email.com",
     phone: "(800) 555-1234",
+    address: undefined,
+    socialMedia: undefined,
   },
   "Work Experience": {
     heading: "Work Experience",

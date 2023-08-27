@@ -7,16 +7,16 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import { SectionUpdatePayload } from "types/resumeState";
+import { ResumeState, SectionUpdatePayload } from "types/resumeState";
 
 export type EditorModalState =
   | {
       open: true;
-      content: SectionUpdatePayload;
+      content: SectionUpdatePayload | ResumeState["Header"];
     }
   | {
       open: false;
-      content?: SectionUpdatePayload;
+      content?: SectionUpdatePayload | ResumeState["Header"];
     };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
@@ -24,7 +24,7 @@ export const EditorModalStateContext = createContext<EditorModalState | null>(nu
 type EditorModalAction =
   | {
       type: "openWithContent";
-      payload: SectionUpdatePayload;
+      payload: SectionUpdatePayload | ResumeState["Header"];
     }
   | {
       type: "setOpen";

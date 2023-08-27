@@ -21,12 +21,7 @@ export const ResumeStateContext = createContext<ResumeState>(DEFAULT_RESUME_STAT
 type ResumeAction =
   | {
       type: "updateHeader";
-      payload: {
-        [Key in keyof ResumeState["Header"]]: {
-          key: Key;
-          value: ResumeState["Header"][Key];
-        };
-      }[keyof ResumeState["Header"]];
+      payload: Partial<ResumeState["Header"]>;
     }
   | {
       type: "updateSectionTitle";
@@ -56,6 +51,10 @@ export const ResumeDispatchContext = createContext<null | ResumeDispatch>(null);
 const resumeStateReducer: Reducer<ResumeState, ResumeAction> = (state, { type, payload }) => {
   return produce(state, (resumeDraft) => {
     switch (type) {
+      case "updateHeader": {
+        resumeDraft.Header = { ...resumeDraft.Header, ...payload };
+        return resumeDraft;
+      }
       case "updateSectionTitle": {
         const { section, value } = payload;
         resumeDraft[section].heading = value;

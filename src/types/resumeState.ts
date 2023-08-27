@@ -29,10 +29,10 @@ export type Skill = string;
 export type ResumeState = {
   Header: {
     name: string;
-    phone?: string;
-    socialMedia?: string;
-    email?: string;
-    address?: string;
+    phone: string | undefined;
+    socialMedia: string | undefined;
+    email: string | undefined;
+    address: string | undefined;
   };
   Skills: {
     heading: string;
@@ -54,7 +54,7 @@ export type ResumeState = {
 
 export type ResumeSection = Exclude<keyof ResumeState, "Header">;
 
-type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : never;
+type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : T;
 
 export type SectionDataEntry = {
   [Section in ResumeSection]: {
