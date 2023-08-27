@@ -1,11 +1,11 @@
+import { Button } from "components/Button/Button";
+import { RemoveDataEntryButton } from "components/Button/RemoveDataEntryButton";
 import { useEditorModalDispatch, useEditorModalState } from "contexts/hooks";
 import { Modal } from "../Modal";
-import { Button } from "components/Button/Button";
-import { WorkExperienceEditor } from "./Editors/WorkExperienceEditor";
 import { EducationEditor } from "./Editors/EducationEditor";
 import { ProjectsEditor } from "./Editors/ProjectsEditor";
-import { RemoveDataEntryButton } from "components/Button/RemoveDataEntryButton";
 import { SkillsEditor } from "./Editors/SkillsEditor";
+import { WorkExperienceEditor } from "./Editors/WorkExperienceEditor";
 
 export const EditorModal = () => {
   const { setOpen } = useEditorModalDispatch();

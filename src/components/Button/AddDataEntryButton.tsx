@@ -1,8 +1,8 @@
-import { useEditorModalDispatch, useResumeDispatch, useResumeState } from "contexts/hooks";
-import { Button } from "./Button";
 import { BLANK_SECTIONS } from "constants/defaults";
-import { ResumeSection, SectionDataEntry } from "types/resumeState";
+import { useEditorModalDispatch, useResumeDispatch, useResumeState } from "contexts/hooks";
 import { ComponentProps } from "react";
+import { ResumeSection, SectionDataEntry } from "types/resumeState";
+import { Button } from "./Button";
 import classes from "./Button.module.css";
 
 type AddDataEntryButtonProps = {

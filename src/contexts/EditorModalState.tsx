@@ -1,13 +1,13 @@
+import { produce } from "immer";
 import {
+  createContext,
   Dispatch,
   DispatchWithoutAction,
   Reducer,
-  createContext,
   useMemo,
   useReducer,
 } from "react";
 import { SectionUpdatePayload } from "types/resumeState";
-import { produce } from "immer";
 
 export type EditorModalState =
   | {

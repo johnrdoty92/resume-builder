@@ -1,7 +1,7 @@
 import { useEditorModalDispatch } from "contexts/hooks";
-import { Button } from "./Button";
-import { SectionUpdatePayload } from "types/resumeState";
 import { ComponentProps } from "react";
+import { SectionUpdatePayload } from "types/resumeState";
+import { Button } from "./Button";
 import classes from "./Button.module.css";
 
 type EditButtonProps = SectionUpdatePayload & { buttonProps?: ComponentProps<typeof Button> };

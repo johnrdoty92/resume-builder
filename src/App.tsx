@@ -11,7 +11,7 @@ import { Projects } from "components/Section/Projects";
 import { Skills } from "components/Section/Skills";
 // import { useResumeState } from "./contexts/hooks";
 import { WorkExperience } from "components/Section/WorkExperience";
-import { Header } from "./components/Header/Header";
+import { Header } from "./components/Header";
 import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;

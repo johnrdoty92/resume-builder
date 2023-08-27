@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { ResumeDispatchContext, ResumeStateContext } from "./ResumeStateContext";
 import { EditorModalDispatchContext, EditorModalStateContext } from "./EditorModalState";
+import { ResumeDispatchContext, ResumeStateContext } from "./ResumeStateContext";
 
 export const useResumeState = () => {
   const value = useContext(ResumeStateContext);
