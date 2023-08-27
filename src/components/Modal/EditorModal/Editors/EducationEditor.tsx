@@ -1,7 +1,9 @@
+import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "components/Button/Button";
 import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
 import { produce } from "immer";
 import { ChangeEvent, useState } from "react";
+import DatePicker from "react-datepicker";
 import { Education } from "types/resumeState";
 
 export const EducationEditor = ({ data, index }: { data: Education; index: number }) => {
@@ -11,15 +13,22 @@ export const EducationEditor = ({ data, index }: { data: Education; index: numbe
   const { dateOfCompletion, degreeOrCertificate, institution, description, gpa, location } =
     education;
 
-  const handleChange = (key: keyof Education) => (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange =
+    (key: Exclude<keyof Education, "dateOfCompletion">) => (e: ChangeEvent<HTMLInputElement>) => {
+      setEducation(
+        produce((draftEducation) => {
+          draftEducation[key] = e.target.value;
+          return draftEducation;
+        })
+      );
+    };
+
+  const handleDateChange = (date: Date | null) => {
+    if (!date) return;
     setEducation(
-      produce((draftProject) => {
-        if (key === "dateOfCompletion") {
-          // TODO: handle date of completion
-          return;
-        }
-        draftProject[key] = e.target.value;
-        return draftProject;
+      produce((draftEducation) => {
+        draftEducation.dateOfCompletion = date;
+        return draftEducation;
       })
     );
   };
@@ -51,7 +60,7 @@ export const EducationEditor = ({ data, index }: { data: Education; index: numbe
         Description
         <input onChange={handleChange("description")} value={description ?? ""} />
       </label>
-      {/* TODO: date */}
+      <DatePicker selected={dateOfCompletion} onChange={handleDateChange} />
       <Button onClick={handleSave}>Save</Button>
     </div>
   );
