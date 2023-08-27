@@ -1,8 +1,8 @@
+import { ReactComponent as CloseIcon } from "assets/icons/close.svg";
 import { Button } from "components/Button/Button";
 import { Chip } from "components/Button/Chip";
 import { useResumeDispatch, useResumeState } from "contexts/hooks";
 import { KeyboardEventHandler, useState } from "react";
-import { ReactComponent as CloseIcon } from "assets/icons/close.svg";
 
 const SkillChip = ({ skill, index }: { skill: string; index: number }) => {
   const { removeDataEntry } = useResumeDispatch();

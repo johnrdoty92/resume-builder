@@ -6,16 +6,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { DELIMITER } from "constants/editorModal";
 
 type BulletPointEditorProps = {
-  detail: string;
-  handleUpdate: (newValue?: string) => void;
+  value: string;
+  index: number;
+  handleUpdate: (index: number, value?: string) => void;
 };
 
-const BulletPointEditor = ({ detail, handleUpdate }: BulletPointEditorProps) => {
+export const BulletPointEditor = ({ value, index, handleUpdate }: BulletPointEditorProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [editableDetail, setEditableDetail] = useState(detail);
+  const [editableDetail, setEditableDetail] = useState(value);
   const inputRef = useRef<ElementRef<"input">>(null);
 
   const handleClick: MouseEventHandler<HTMLElement> = (e) => {
@@ -26,7 +26,7 @@ const BulletPointEditor = ({ detail, handleUpdate }: BulletPointEditorProps) => 
   const handleBlur = () => setIsEditMode((mode) => !mode);
 
   const handleSave = () => {
-    handleUpdate(editableDetail);
+    handleUpdate(index, editableDetail);
     setIsEditMode(false);
   };
 
@@ -56,72 +56,14 @@ const BulletPointEditor = ({ detail, handleUpdate }: BulletPointEditorProps) => 
       </button>
     </div>
   ) : (
-    <p onClick={handleClick} key={detail}>
-      {detail}
+    <p onClick={handleClick} key={value}>
+      {value}
       <button type="button" onClick={handleClick}>
         Edit
       </button>
-      <button type="button" onClick={() => handleUpdate(undefined)}>
+      <button type="button" onClick={() => handleUpdate(index)}>
         Delete
       </button>
     </p>
-  );
-};
-
-type BulletPointsProps = {
-  id: string;
-  bulletPoints: string[];
-  label: string;
-};
-
-export const BulletPoints = ({ id, bulletPoints, label }: BulletPointsProps) => {
-  const [details, setDetails] = useState(bulletPoints);
-  const [currentDetail, setCurrentDetail] = useState("");
-
-  const handleEnterKey: KeyboardEventHandler<HTMLInputElement> = (e) => {
-    if (e.key === "Enter" && currentDetail) {
-      e.preventDefault();
-      setDetails((prev) => [...prev, currentDetail]);
-      setCurrentDetail("");
-    }
-  };
-
-  const handleClick = () => {
-    setDetails((prev) => [...prev, currentDetail]);
-    setCurrentDetail("");
-  };
-
-  const handleUpdateItem: (i: number) => BulletPointEditorProps["handleUpdate"] =
-    (i) => (newValue) => {
-      setDetails((prev) => {
-        const copy = [...prev];
-        !newValue ? copy.splice(i, 1) : copy.splice(i, 1, newValue);
-        return copy;
-      });
-    };
-
-  return (
-    <div>
-      <h6>{label}</h6>
-      {details.map((detail, i) => (
-        <BulletPointEditor
-          key={`${detail}${i}`}
-          detail={detail}
-          handleUpdate={handleUpdateItem(i)}
-        />
-      ))}
-      <label>
-        {label}
-        <input
-          value={currentDetail}
-          onChange={(e) => setCurrentDetail(e.target.value)}
-          onKeyDown={handleEnterKey}
-        />
-        <button type="button" disabled={!currentDetail} onClick={handleClick}>
-          Add
-        </button>
-      </label>
-      <input hidden={true} value={details.join(DELIMITER)} name={`${label}-${id}`} readOnly />
-    </div>
   );
 };

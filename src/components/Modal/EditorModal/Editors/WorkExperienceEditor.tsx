@@ -2,9 +2,56 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "components/Button/Button";
 import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
 import { produce } from "immer";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, KeyboardEventHandler, useState } from "react";
 import DatePicker from "react-datepicker";
 import { WorkExperience } from "types/resumeState";
+import { BulletPointEditor } from "../BulletPoints";
+
+type ResponsibilitiesProps = {
+  responsibilities: string[];
+  addResponsibility: (value: string) => void;
+  updateResponsibility: (index: number, value?: string) => void;
+};
+
+const Responsibilities = ({
+  responsibilities,
+  addResponsibility,
+  updateResponsibility,
+}: ResponsibilitiesProps) => {
+  const [currentResponsibility, setCurrentResponsiblity] = useState("");
+
+  const handleSaveCurrent = () => {
+    addResponsibility(currentResponsibility);
+    setCurrentResponsiblity("");
+  };
+
+  const handleEnter: KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter" && currentResponsibility) {
+      handleSaveCurrent();
+    }
+  };
+
+  return (
+    <>
+      {responsibilities.map((acc, i) => {
+        return (
+          <BulletPointEditor
+            key={`${acc}${i}`}
+            index={i}
+            value={acc}
+            handleUpdate={updateResponsibility}
+          />
+        );
+      })}
+      <input
+        value={currentResponsibility}
+        onChange={(e) => setCurrentResponsiblity(e.target.value)}
+        onKeyDown={handleEnter}
+      />
+      <Button onClick={handleSaveCurrent}>Add Accomplishment</Button>
+    </>
+  );
+};
 
 export const WorkExperienceEditor = ({ data, index }: { data: WorkExperience; index: number }) => {
   const { updateDataEntry } = useResumeDispatch();
@@ -13,13 +60,10 @@ export const WorkExperienceEditor = ({ data, index }: { data: WorkExperience; in
   const { company, dates, jobTitle, responsibilities, location } = workExperience;
 
   const handleChange =
-    (key: Exclude<keyof WorkExperience, "dates">) => (e: ChangeEvent<HTMLInputElement>) => {
+    (key: Exclude<keyof WorkExperience, "dates" | "responsibilities">) =>
+    (e: ChangeEvent<HTMLInputElement>) => {
       setWorkExperience(
         produce((draftWorkExperience) => {
-          if (key === "responsibilities") {
-            // TODO: handle responsibilities
-            return;
-          }
           draftWorkExperience[key] = e.target.value;
           return draftWorkExperience;
         })
@@ -41,6 +85,28 @@ export const WorkExperienceEditor = ({ data, index }: { data: WorkExperience; in
     setOpen(false);
   };
 
+  const handleUpdateResponsibility = (index: number, value?: string): void => {
+    setWorkExperience(
+      produce((draftExperience) => {
+        if (value) {
+          draftExperience.responsibilities.splice(index, 1, value);
+        } else {
+          draftExperience.responsibilities.splice(index, 1);
+        }
+        return draftExperience;
+      })
+    );
+  };
+
+  const addResponsibility = (value: string) => {
+    setWorkExperience(
+      produce((draftExperience) => {
+        draftExperience.responsibilities.push(value);
+        return draftExperience;
+      })
+    );
+  };
+
   return (
     <div>
       <label>
@@ -57,7 +123,11 @@ export const WorkExperienceEditor = ({ data, index }: { data: WorkExperience; in
       </label>
       <DatePicker selected={dates.start} onChange={handleDateChange("start")} />
       <DatePicker selected={dates.end} onChange={handleDateChange("end")} />
-      {/* TODO: responsibilities */}
+      <Responsibilities
+        addResponsibility={addResponsibility}
+        responsibilities={responsibilities}
+        updateResponsibility={handleUpdateResponsibility}
+      />
 
       <Button onClick={handleSave}>Save</Button>
     </div>
