@@ -1,8 +1,10 @@
+import { DEFAULT_RESUME_STATE, DEV_DEFAULT_RESUME_STATE } from "constants/defaults";
+import { produce } from "immer";
 import {
+  createContext,
   Dispatch,
   DispatchWithoutAction,
   Reducer,
-  createContext,
   useEffect,
   useMemo,
   useReducer,
@@ -13,12 +15,19 @@ import {
   SectionDataEntry,
   SectionUpdatePayload,
 } from "types/resumeState";
-import { produce } from "immer";
-import { DEFAULT_RESUME_STATE, DEV_DEFAULT_RESUME_STATE } from "constants/defaults";
 
 export const ResumeStateContext = createContext<ResumeState>(DEFAULT_RESUME_STATE);
 
 type ResumeAction =
+  | {
+      type: "updateHeader";
+      payload: {
+        [Key in keyof ResumeState["Header"]]: {
+          key: Key;
+          value: ResumeState["Header"][Key];
+        };
+      }[keyof ResumeState["Header"]];
+    }
   | {
       type: "updateSectionTitle";
       payload: { section: ResumeSection; value: string };
@@ -101,6 +110,9 @@ export const ResumeStateProvider = ({ children }: { children: React.ReactNode })
 
   const resumeDispatch: ResumeDispatch = useMemo(
     () => ({
+      updateHeader(payload) {
+        dispatch({ type: "updateHeader", payload });
+      },
       updateSectionTitle(payload) {
         dispatch({ type: "updateSectionTitle", payload });
       },

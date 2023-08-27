@@ -2,17 +2,17 @@
 // import classes from "./components/DragAndDrop.module.css";
 // import { Education } from "./components/Sections/Education/Education";
 // import { Experience } from "./components/Sections/Experience/Experience";
-// import { Header } from "./components/Header/Header";
 // import { ResumeEntry } from "./components/ResumeEntry/ResumeEntry";
 // import { Section } from "./components/Sections/Section";
 // import { SectionTitle } from "components/SectionTitle";
 // import { EditSectionButton } from "./components/Button/EditSectionButton";
-import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
-// import { useResumeState } from "./contexts/hooks";
-import { WorkExperience } from "components/Section/WorkExperience";
 import { Education } from "components/Section/Education";
 import { Projects } from "components/Section/Projects";
 import { Skills } from "components/Section/Skills";
+// import { useResumeState } from "./contexts/hooks";
+import { WorkExperience } from "components/Section/WorkExperience";
+import { Header } from "./components/Header/Header";
+import { EditorModal } from "./components/Modal/EditorModal/EditorModal";
 
 // const HEIGHTS = ["50px", "100px", "35px", "45px", "80px"] as const;
 // const nodes = HEIGHTS.map((height, i) => (
@@ -66,7 +66,7 @@ function App() {
         padding: "0.5in",
       }}
     >
-      {/* <Header name={header.name} details={{ email: header.email }} /> */}
+      <Header />
       <Skills />
       <WorkExperience />
       <Projects />

@@ -27,6 +27,13 @@ export type Education = {
 export type Skill = string;
 
 export type ResumeState = {
+  Header: {
+    name: string;
+    phone?: string;
+    socialMedia?: string;
+    email?: string;
+    address?: string;
+  };
   Skills: {
     heading: string;
     data: Skill[];
@@ -45,7 +52,7 @@ export type ResumeState = {
   };
 };
 
-export type ResumeSection = keyof ResumeState;
+export type ResumeSection = Exclude<keyof ResumeState, "Header">;
 
 type FlattenArray<T> = T extends ArrayLike<infer Value> ? Value : never;
 

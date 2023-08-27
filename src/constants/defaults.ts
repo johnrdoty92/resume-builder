@@ -24,10 +24,13 @@ export const BLANK_SECTIONS: { [Section in ResumeSection]: SectionDataBlankDefau
     name: "",
     url: "",
   },
-  Skills: '',
+  Skills: "",
 };
 
 export const DEFAULT_RESUME_STATE: ResumeState = {
+  Header: {
+    name: "Name",
+  },
   "Work Experience": {
     heading: "Work Experience",
     data: [],
@@ -47,6 +50,11 @@ export const DEFAULT_RESUME_STATE: ResumeState = {
 };
 
 export const DEV_DEFAULT_RESUME_STATE: ResumeState = {
+  Header: {
+    name: "John Doe",
+    email: "john@email.com",
+    phone: "(800) 555-1234",
+  },
   "Work Experience": {
     heading: "Work Experience",
     data: [
