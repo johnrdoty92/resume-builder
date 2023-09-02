@@ -29,7 +29,6 @@ type EditorModalAction =
       type: "openSection";
       payload: { section: keyof ResumeState; index?: number };
     }
-    // TODO: create "addEntry", and update the AddDataEntryButton
   | {
       type: "changeEntryIndex";
       payload: number | SetStateAction<number>;

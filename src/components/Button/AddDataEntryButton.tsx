@@ -12,7 +12,7 @@ type AddDataEntryButtonProps = {
 export const AddDataEntryButton = ({ section, ...buttonProps }: AddDataEntryButtonProps) => {
   const resumeState = useResumeState();
   const { addDataEntry } = useResumeDispatch();
-  const { openWithContent } = useEditorModalDispatch();
+  const { openSection } = useEditorModalDispatch();
 
   const handleClick = () => {
     const dataEntry = {
@@ -20,7 +20,7 @@ export const AddDataEntryButton = ({ section, ...buttonProps }: AddDataEntryButt
       section,
     } as SectionDataEntry;
     addDataEntry(dataEntry);
-    openWithContent({ ...dataEntry, index: resumeState[section].data.length });
+    openSection({ section, index: resumeState[section].data.length });
   };
 
   return <Button {...buttonProps} className={classes.addDataEntryButton} onClick={handleClick} />;
