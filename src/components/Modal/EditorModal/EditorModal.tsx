@@ -8,51 +8,37 @@ import { ProjectsEditor } from "./Editors/ProjectsEditor";
 import { SkillsEditor } from "./Editors/SkillsEditor";
 import { WorkExperienceEditor } from "./Editors/WorkExperienceEditor";
 
+const Editor = () => {
+  const { section } = useEditorModalState();
+  switch (section) {
+    case "Header": {
+      return <HeaderEditor />;
+    }
+    case "Education": {
+      return <EducationEditor />;
+    }
+    case "Projects": {
+      return <ProjectsEditor/>
+    }
+    case "Skills": {
+      return <SkillsEditor/>
+    }
+    case "Work Experience": {
+      return <WorkExperienceEditor/>
+    }
+    default: {
+      return <></>;
+    }
+  }
+};
+
 export const EditorModal = () => {
   const { setOpen } = useEditorModalDispatch();
-  const { open, content } = useEditorModalState();
+  const { open } = useEditorModalState();
 
-  const handleClose = () => setOpen(false);
-
-  if (!content) {
-    return null;
-  } else if ("name" in content) {
-    return (
-      <Modal open={open} setOpen={setOpen}>
-        <HeaderEditor />
-        <Button onClick={handleClose}>Close</Button>
-      </Modal>
-    );
-  } else {
-    return (
-      <Modal open={open} setOpen={setOpen}>
-        {(() => {
-          if (!content) return null;
-          switch (content.section) {
-            case "Work Experience": {
-              const { data, index } = content;
-              return <WorkExperienceEditor data={data} index={index} />;
-            }
-            case "Education": {
-              const { data, index } = content;
-              return <EducationEditor data={data} index={index} />;
-            }
-            case "Projects": {
-              const { data, index } = content;
-              return <ProjectsEditor data={data} index={index} />;
-            }
-            case "Skills": {
-              return <SkillsEditor />;
-            }
-          }
-        })()}
-        {content?.section && content?.index !== undefined ? (
-          <RemoveDataEntryButton section={content.section} index={content.index}>
-            Remove Entry
-          </RemoveDataEntryButton>
-        ) : null}
-        <Button onClick={handleClose}>Cancel</Button>
-      </Modal>
-    );
-  }
+  return (
+    <Modal open={open} setOpen={setOpen}>
+      <Editor />
+    </Modal>
+  );
 };

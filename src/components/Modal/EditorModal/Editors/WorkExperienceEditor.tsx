@@ -1,11 +1,19 @@
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "components/Button/Button";
-import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
+import { Input } from "components/Input";
+import {
+  useEditorModalDispatch,
+  useEditorModalState,
+  useResumeDispatch,
+  useResumeState,
+} from "contexts/hooks";
 import { produce } from "immer";
-import { ChangeEvent, KeyboardEventHandler, useState } from "react";
+import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { WorkExperience } from "types/resumeState";
 import { BulletPointEditor } from "../BulletPoints";
+import { DataEntryNavigatorButtons } from "../DataEntryNavigatorButtons";
+import classes from "./Editor.module.css";
 
 type ResponsibilitiesProps = {
   responsibilities: string[];
@@ -53,22 +61,28 @@ const Responsibilities = ({
   );
 };
 
-export const WorkExperienceEditor = ({ data, index }: { data: WorkExperience; index: number }) => {
+export const WorkExperienceEditor = () => {
   const { updateDataEntry } = useResumeDispatch();
   const { setOpen } = useEditorModalDispatch();
-  const [workExperience, setWorkExperience] = useState<WorkExperience>(data);
+  const { index = 0 } = useEditorModalState();
+  const WorkExperience = useResumeState()["Work Experience"];
+  const [workExperience, setWorkExperience] = useState<WorkExperience>(WorkExperience.data[index]);
   const { company, dates, jobTitle, responsibilities, location } = workExperience;
 
-  const handleChange =
-    (key: Exclude<keyof WorkExperience, "dates" | "responsibilities">) =>
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setWorkExperience(
-        produce((draftWorkExperience) => {
-          draftWorkExperience[key] = e.target.value;
-          return draftWorkExperience;
-        })
-      );
-    };
+  useEffect(() => {
+    const nextWorkExperienceData = WorkExperience.data[index];
+    if (nextWorkExperienceData) setWorkExperience(nextWorkExperienceData);
+  }, [index, WorkExperience.data]);
+
+  const handleChange = (key: keyof WorkExperience) => (e: ChangeEvent<HTMLInputElement>) => {
+    if (key === "dates" || key === "responsibilities") return;
+    setWorkExperience(
+      produce((draftWorkExperience) => {
+        draftWorkExperience[key] = e.target.value;
+        return draftWorkExperience;
+      })
+    );
+  };
 
   const handleDateChange = (type: "start" | "end") => (date: Date | null) => {
     if (!date) return;
@@ -108,19 +122,10 @@ export const WorkExperienceEditor = ({ data, index }: { data: WorkExperience; in
   };
 
   return (
-    <div>
-      <label>
-        Job Title
-        <input onChange={handleChange("jobTitle")} value={jobTitle} />
-      </label>
-      <label>
-        Company
-        <input onChange={handleChange("company")} value={company} />
-      </label>
-      <label>
-        Location
-        <input onChange={handleChange("location")} value={location ?? ""} />
-      </label>
+    <div className={classes.editorInputs}>
+      <Input label="Job Title" onChange={handleChange("jobTitle")} value={jobTitle} />
+      <Input label="Company" onChange={handleChange("company")} value={company} />
+      <Input label="Location" onChange={handleChange("location")} value={location ?? ""} />
       <DatePicker selected={dates.start} onChange={handleDateChange("start")} />
       <DatePicker selected={dates.end} onChange={handleDateChange("end")} />
       <Responsibilities
@@ -130,6 +135,7 @@ export const WorkExperienceEditor = ({ data, index }: { data: WorkExperience; in
       />
 
       <Button onClick={handleSave}>Save</Button>
+      <DataEntryNavigatorButtons />
     </div>
   );
 };

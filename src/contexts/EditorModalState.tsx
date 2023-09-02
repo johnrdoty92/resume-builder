@@ -4,27 +4,35 @@ import {
   Dispatch,
   DispatchWithoutAction,
   Reducer,
+  SetStateAction,
   useMemo,
   useReducer,
 } from "react";
-import { ResumeState, SectionUpdatePayload } from "types/resumeState";
+import { ResumeState } from "types/resumeState";
 
 export type EditorModalState =
   | {
       open: true;
-      content: SectionUpdatePayload | ResumeState["Header"];
+      section: keyof ResumeState;
+      index?: number;
     }
   | {
       open: false;
-      content?: SectionUpdatePayload | ResumeState["Header"];
+      section?: keyof ResumeState;
+      index?: number;
     };
 
 export const EditorModalStateContext = createContext<EditorModalState | null>(null);
 
 type EditorModalAction =
   | {
-      type: "openWithContent";
-      payload: SectionUpdatePayload | ResumeState["Header"];
+      type: "openSection";
+      payload: { section: keyof ResumeState; index?: number };
+    }
+    // TODO: create "addEntry", and update the AddDataEntryButton
+  | {
+      type: "changeEntryIndex";
+      payload: number | SetStateAction<number>;
     }
   | {
       type: "setOpen";
@@ -43,11 +51,18 @@ const editorModalStateReducer: Reducer<EditorModalState, EditorModalAction> = (
 ) => {
   return produce(state, (modalStateDraft) => {
     switch (type) {
-      case "openWithContent": {
+      case "openSection": {
+        const { section, index } = payload;
         return {
           open: true,
-          content: payload,
+          section,
+          index,
         };
+      }
+      case "changeEntryIndex": {
+        const index = typeof payload === "number" ? payload : payload(modalStateDraft.index ?? 0);
+        modalStateDraft.index = index;
+        return modalStateDraft;
       }
       case "setOpen": {
         modalStateDraft.open = payload;
@@ -67,8 +82,11 @@ export const EditorModalStateProvider = ({ children }: { children: React.ReactNo
       setOpen(payload) {
         dispatch({ payload, type: "setOpen" });
       },
-      openWithContent(payload) {
-        dispatch({ payload, type: "openWithContent" });
+      changeEntryIndex(payload) {
+        dispatch({ payload, type: "changeEntryIndex" });
+      },
+      openSection(payload) {
+        dispatch({ payload, type: "openSection" });
       },
     }),
     []

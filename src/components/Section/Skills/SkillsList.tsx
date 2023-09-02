@@ -1,6 +1,6 @@
+import { EditButton } from "components/Button/EditButton";
 import { useResumeState } from "contexts/hooks";
 import classes from "./Skills.module.css";
-import { EditButton } from "components/Button/EditButton";
 
 export const SkillsList = () => {
   const { data } = useResumeState().Skills;
@@ -11,7 +11,7 @@ export const SkillsList = () => {
           return <p key={`${skill}-${i}`}>{skill}</p>;
         })}
       </div>
-      <EditButton data={data} section="Skills" />
+      <EditButton section="Skills" />
     </div>
   );
 };

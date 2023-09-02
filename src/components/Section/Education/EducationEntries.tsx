@@ -1,8 +1,7 @@
-import { useResumeState } from "contexts/hooks";
-import classes from "./Education.module.css";
-import { getShortDate } from "utils/stringUtils";
-import { Fragment } from "react";
 import { EditButton } from "components/Button/EditButton";
+import { useResumeState } from "contexts/hooks";
+import { getShortDate } from "utils/stringUtils";
+import classes from "./Education.module.css";
 
 export const EducationEntries = () => {
   const { data } = useResumeState().Education;
@@ -21,7 +20,7 @@ export const EducationEntries = () => {
               <p className={classes.date}>{getShortDate(dateOfCompletion)}</p>
             </div>
             <p>{description}</p>
-            <EditButton index={i} data={education} section="Education" />
+            <EditButton index={i} section="Education" />
           </div>
         );
       })}

@@ -1,6 +1,6 @@
+import { EditButton } from "components/Button/EditButton";
 import { useResumeState } from "contexts/hooks";
 import classes from "./Project.module.css";
-import { EditButton } from "components/Button/EditButton";
 
 export const ProjectEntries = () => {
   const { data } = useResumeState().Projects;
@@ -20,7 +20,7 @@ export const ProjectEntries = () => {
                 return <li key={`${a}${i}`}>{a}</li>;
               })}
             </ul>
-            <EditButton index={i} data={project} section="Projects" />
+            <EditButton index={i} section="Projects" />
           </div>
         );
       })}

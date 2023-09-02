@@ -1,27 +1,48 @@
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "components/Button/Button";
-import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
+import { Input } from "components/Input";
+import {
+  useEditorModalDispatch,
+  useEditorModalState,
+  useResumeDispatch,
+  useResumeState,
+} from "contexts/hooks";
 import { produce } from "immer";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Education } from "types/resumeState";
+import { DataEntryNavigatorButtons } from "../DataEntryNavigatorButtons";
+import classes from "./Editor.module.css";
 
-export const EducationEditor = ({ data, index }: { data: Education; index: number }) => {
+export const EducationEditor = () => {
   const { updateDataEntry } = useResumeDispatch();
   const { setOpen } = useEditorModalDispatch();
-  const [education, setEducation] = useState<Education>(data);
-  const { dateOfCompletion, degreeOrCertificate, institution, description, gpa, location } =
-    education;
+  const { index = 0 } = useEditorModalState();
+  const { Education } = useResumeState();
+  const [education, setEducation] = useState<Education>(Education.data[index]);
+  const {
+    dateOfCompletion,
+    degreeOrCertificate: degree,
+    institution,
+    description,
+    gpa,
+    location,
+  } = education;
 
-  const handleChange =
-    (key: Exclude<keyof Education, "dateOfCompletion">) => (e: ChangeEvent<HTMLInputElement>) => {
-      setEducation(
-        produce((draftEducation) => {
-          draftEducation[key] = e.target.value;
-          return draftEducation;
-        })
-      );
-    };
+  useEffect(() => {
+    const nextEducationData = Education.data[index];
+    if (nextEducationData) setEducation(nextEducationData);
+  }, [index, Education.data]);
+
+  const handleChange = (key: keyof Education) => (e: ChangeEvent<HTMLInputElement>) => {
+    if (key === "dateOfCompletion") return;
+    setEducation(
+      produce((draftEducation) => {
+        draftEducation[key] = e.target.value;
+        return draftEducation;
+      })
+    );
+  };
 
   const handleDateChange = (date: Date | null) => {
     if (!date) return;
@@ -39,29 +60,15 @@ export const EducationEditor = ({ data, index }: { data: Education; index: numbe
   };
 
   return (
-    <div>
-      <label>
-        Degree
-        <input onChange={handleChange("degreeOrCertificate")} value={degreeOrCertificate} />
-      </label>
-      <label>
-        Institution
-        <input onChange={handleChange("institution")} value={institution} />
-      </label>
-      <label>
-        Location
-        <input onChange={handleChange("location")} value={location ?? ""} />
-      </label>
-      <label>
-        GPA
-        <input onChange={handleChange("gpa")} value={gpa ?? ""} />
-      </label>
-      <label>
-        Description
-        <input onChange={handleChange("description")} value={description ?? ""} />
-      </label>
+    <div className={classes.editorInputs}>
+      <Input label="Degree" onChange={handleChange("degreeOrCertificate")} value={degree} />
+      <Input label="Institution" onChange={handleChange("institution")} value={institution} />
+      <Input label="Location" onChange={handleChange("location")} value={location ?? ""} />
+      <Input label="GPA" onChange={handleChange("gpa")} value={gpa ?? ""} />
+      <Input label="Description" onChange={handleChange("description")} value={description ?? ""} />
       <DatePicker selected={dateOfCompletion} onChange={handleDateChange} />
       <Button onClick={handleSave}>Save</Button>
+      <DataEntryNavigatorButtons />
     </div>
   );
 };

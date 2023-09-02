@@ -1,9 +1,17 @@
 import { Button } from "components/Button/Button";
-import { useEditorModalDispatch, useResumeDispatch } from "contexts/hooks";
+import { Input } from "components/Input";
+import {
+  useEditorModalDispatch,
+  useEditorModalState,
+  useResumeDispatch,
+  useResumeState,
+} from "contexts/hooks";
 import { produce } from "immer";
-import { ChangeEvent, KeyboardEventHandler, useState } from "react";
+import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from "react";
 import { Project } from "types/resumeState";
 import { BulletPointEditor } from "../BulletPoints";
+import { DataEntryNavigatorButtons } from "../DataEntryNavigatorButtons";
+import classes from "./Editor.module.css";
 
 type AccomplishmentsProps = {
   accomplishments: string[];
@@ -51,21 +59,28 @@ const Accomplishments = ({
   );
 };
 
-export const ProjectsEditor = ({ data, index }: { data: Project; index: number }) => {
+export const ProjectsEditor = () => {
   const { updateDataEntry } = useResumeDispatch();
   const { setOpen } = useEditorModalDispatch();
-  const [project, setProject] = useState<Project>(data);
+  const { index = 0 } = useEditorModalState();
+  const { Projects } = useResumeState();
+  const [project, setProject] = useState<Project>(Projects.data[index]);
   const { accomplishments, name, url } = project;
 
-  const handleChange =
-    (key: Exclude<keyof Project, "accomplishments">) => (e: ChangeEvent<HTMLInputElement>) => {
-      setProject(
-        produce((draftProject) => {
-          draftProject[key] = e.target.value;
-          return draftProject;
-        })
-      );
-    };
+  useEffect(() => {
+    const nextProjectData = Projects.data[index];
+    if (nextProjectData) setProject(nextProjectData);
+  }, [index, Projects.data]);
+
+  const handleChange = (key: keyof Project) => (e: ChangeEvent<HTMLInputElement>) => {
+    if (key === "accomplishments") return;
+    setProject(
+      produce((draftProject) => {
+        draftProject[key] = e.target.value;
+        return draftProject;
+      })
+    );
+  };
 
   const handleSave = () => {
     updateDataEntry({ data: project, section: "Projects", index });
@@ -95,21 +110,16 @@ export const ProjectsEditor = ({ data, index }: { data: Project; index: number }
   };
 
   return (
-    <div>
-      <label>
-        Project Name
-        <input onChange={handleChange("name")} value={name} />
-      </label>
-      <label>
-        URL
-        <input onChange={handleChange("url")} value={url ?? ""} />
-      </label>
+    <div className={classes.editorInputs}>
+      <Input label="Project Name" onChange={handleChange("name")} value={name} />
+      <Input label="URL" onChange={handleChange("url")} value={url ?? ""} />
       <Accomplishments
         accomplishments={accomplishments}
         addAccomplishment={addAccomplishment}
         updateAccomplishment={handleUpdateAccomplishment}
       />
       <Button onClick={handleSave}>Save</Button>
+      <DataEntryNavigatorButtons />
     </div>
   );
 };

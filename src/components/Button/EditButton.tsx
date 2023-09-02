@@ -1,16 +1,18 @@
+import { EditorModalState } from "contexts/EditorModalState";
 import { useEditorModalDispatch } from "contexts/hooks";
 import { ComponentProps } from "react";
-import { SectionUpdatePayload } from "types/resumeState";
 import { Button } from "./Button";
 import classes from "./Button.module.css";
 
-type EditButtonProps = SectionUpdatePayload & { buttonProps?: ComponentProps<typeof Button> };
+type EditButtonProps = Omit<Extract<EditorModalState, { open: true }>, "open"> & {
+  buttonProps?: ComponentProps<typeof Button>;
+};
 
 export const EditButton = ({ buttonProps, ...payload }: EditButtonProps) => {
-  const { openWithContent } = useEditorModalDispatch();
+  const { openSection } = useEditorModalDispatch();
 
   const handleClick = () => {
-    openWithContent(payload);
+    openSection(payload);
   };
 
   return (

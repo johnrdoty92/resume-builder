@@ -1,7 +1,7 @@
 import { EditButton } from "components/Button/EditButton";
-import classes from "./WorkExperience.module.css";
 import { useResumeState } from "contexts/hooks";
 import { getShortDate } from "utils/stringUtils";
+import classes from "./WorkExperience.module.css";
 
 export const WorkExperienceEntries = () => {
   const { data } = useResumeState()["Work Experience"];
@@ -25,7 +25,7 @@ export const WorkExperienceEntries = () => {
                 return <li key={`${r}${i}`}>{r}</li>;
               })}
             </ul>
-            <EditButton index={i} data={experience} section="Work Experience" />
+            <EditButton index={i} section="Work Experience" />
           </div>
         );
       })}

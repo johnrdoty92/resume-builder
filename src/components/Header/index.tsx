@@ -6,10 +6,10 @@ import classes from "./Header.module.css";
 export const Header = () => {
   const { Header } = useResumeState();
   const { name, address, email, phone, socialMedia } = Header;
-  const { openWithContent } = useEditorModalDispatch();
+  const { openSection } = useEditorModalDispatch();
 
   const handleOpenModal = () => {
-    openWithContent(Header);
+    openSection({ section: "Header" });
   };
 
   return (
