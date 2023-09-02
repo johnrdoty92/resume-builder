@@ -14,7 +14,9 @@ export const Header = () => {
 
   return (
     <div className={classes.header}>
-      <h1 className={classes.name}>{name}</h1>
+      <h1 className={classes.name} data-name={!!name}>
+        {name || "What's your name?"}
+      </h1>
       <div className={classes.detailsContainer}>
         {!!address && <p>{address}</p>}
         {!!email && <p>{email}</p>}

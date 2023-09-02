@@ -9,6 +9,10 @@
     margin-inline: auto;
 }
 
+[data-name="false"] {
+    opacity: 0.5;
+}
+
 .detailsContainer {
     display: flex;
     margin-inline: auto;
