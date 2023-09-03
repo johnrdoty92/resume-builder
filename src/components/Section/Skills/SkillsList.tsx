@@ -6,11 +6,12 @@ export const SkillsList = () => {
   const { data } = useResumeState().Skills;
   return (
     <div className={classes.skillsListContainer}>
-      <div className={classes.skillsList}>
-        {data.map((skill, i) => {
-          return <p key={`${skill}-${i}`}>{skill}</p>;
+      <p className={classes.skillsList}>
+        {data.map((skill, i, arr) => {
+          const delimiter = i === arr.length - 1 ? "" : ",";
+          return <span key={`${skill}-${i}`}>{skill + delimiter}</span>;
         })}
-      </div>
+      </p>
       <EditButton section="Skills" />
     </div>
   );

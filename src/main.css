@@ -1,5 +1,9 @@
 :root {
     font-family: Arial, sans-serif;
+    --border-radius: 4px;
+    --primary-main: rgb(62, 60, 163);
+    --primary-light: rgb(86, 84, 221);
+    --primary-dark: rgb(45, 43, 115);
 }
 
 *,
@@ -33,4 +37,10 @@ section h2 {
     padding-bottom: 5px;
     margin-bottom: 5px;
     border-bottom: 1px solid black;
+}
+
+input {
+    margin: 0;
+    vertical-align: baseline;
+    line-height: normal;
 }

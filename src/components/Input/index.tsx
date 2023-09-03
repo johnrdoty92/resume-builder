@@ -8,7 +8,7 @@ type InputProps = {
 
 export const Input = ({ label, className, ...props }: InputProps) => {
   return label ? (
-    <label>
+    <label className={classes.label}>
       {label}
       <input {...props} className={clsx([className, classes.input])} />
     </label>

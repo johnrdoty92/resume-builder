@@ -1,3 +1,5 @@
+import { Button } from "components/Button/Button";
+import { Input } from "components/Input";
 import {
   ElementRef,
   KeyboardEventHandler,
@@ -6,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import classes from "./BulletPoints.module.css";
 
 type BulletPointEditorProps = {
   value: string;
@@ -43,27 +46,27 @@ export const BulletPointEditor = ({ value, index, handleUpdate }: BulletPointEdi
   }, [isEditMode]);
 
   return isEditMode ? (
-    <div>
-      <input
+    <div className={classes.bulletPoint}>
+      <Input
         ref={inputRef}
         onChange={(e) => setEditableDetail(e.target.value)}
         value={editableDetail}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
       />
-      <button type="button" onClick={handleSave}>
+      <Button type="button" onClick={handleSave}>
         Save
-      </button>
+      </Button>
     </div>
   ) : (
-    <p onClick={handleClick} key={value}>
-      {value}
-      <button type="button" onClick={handleClick}>
+    <div className={classes.bulletPoint} onClick={handleClick} key={value}>
+      <p>{value}</p>
+      <Button type="button" onClick={handleClick}>
         Edit
-      </button>
-      <button type="button" onClick={() => handleUpdate(index)}>
+      </Button>
+      <Button type="button" onClick={() => handleUpdate(index)}>
         Delete
-      </button>
-    </p>
+      </Button>
+    </div>
   );
 };

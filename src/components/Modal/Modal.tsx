@@ -1,5 +1,5 @@
-import classes from "./Modal.module.css";
 import { animated, config, useTransition } from "@react-spring/web";
+import classes from "./Modal.module.css";
 
 type ModalProps = {
   open: boolean;

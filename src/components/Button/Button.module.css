@@ -1,18 +1,22 @@
-/* TODO: add better styles */
 .button {
     padding: 0.5em 1.25em;
     border: none;
     border-radius: 5px;
-    background-color: rgb(35, 63, 134);
     color: white;
-    outline: 2px solid rgb(70, 100, 168);
+    background-color: var(--primary-main);
     transition: all 250ms ease;
+    box-shadow: inset -2px -2px 4px rgba(43, 21, 105, 0.2);
 }
 
 .button:hover {
-    background-color: rgb(82, 128, 244);
-    color: rgb(19, 29, 104);
+    transition: all 250ms ease;
+    background-color: var(--primary-light);
     cursor: pointer;
+}
+
+.button:active {
+    transition: none;
+    background-color: var(--primary-dark);
 }
 
 .button:disabled {

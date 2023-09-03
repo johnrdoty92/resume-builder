@@ -1,6 +1,6 @@
-import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "components/Button/Button";
 import { Input } from "components/Input";
+import { DatePicker } from "components/Input/DatePicker";
 import {
   useEditorModalDispatch,
   useEditorModalState,
@@ -9,7 +9,6 @@ import {
 } from "contexts/hooks";
 import { produce } from "immer";
 import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
 import { WorkExperience } from "types/resumeState";
 import { BulletPointEditor } from "../BulletPoints";
 import { DataEntryNavigatorButtons } from "../DataEntryNavigatorButtons";
@@ -51,7 +50,7 @@ const Responsibilities = ({
           />
         );
       })}
-      <input
+      <Input
         value={currentResponsibility}
         onChange={(e) => setCurrentResponsiblity(e.target.value)}
         onKeyDown={handleEnter}
@@ -126,8 +125,8 @@ export const WorkExperienceEditor = () => {
       <Input label="Job Title" onChange={handleChange("jobTitle")} value={jobTitle} />
       <Input label="Company" onChange={handleChange("company")} value={company} />
       <Input label="Location" onChange={handleChange("location")} value={location ?? ""} />
-      <DatePicker selected={dates.start} onChange={handleDateChange("start")} />
-      <DatePicker selected={dates.end} onChange={handleDateChange("end")} />
+      <DatePicker label="Start" selected={dates.start} onChange={handleDateChange("start")} />
+      <DatePicker label="End" selected={dates.end} onChange={handleDateChange("end")} />
       <Responsibilities
         addResponsibility={addResponsibility}
         responsibilities={responsibilities}

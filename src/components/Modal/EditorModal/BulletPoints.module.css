@@ -1,0 +1,17 @@
+.bulletPoint {
+    display: flex;
+    gap: 0.5em;
+    align-items: stretch;
+}
+
+.bulletPoint p {
+    flex: 1 1 auto;
+    padding: 0.75em;
+    border-radius: var(--border-radius);
+    outline: 1px solid var(--primary-dark);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.bulletPoint input {
+    flex: 1 1 auto;
+}
