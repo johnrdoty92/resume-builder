@@ -4,6 +4,12 @@
     --primary-main: rgb(62, 60, 163);
     --primary-light: rgb(86, 84, 221);
     --primary-dark: rgb(45, 43, 115);
+    --secondary-main: rgb(118, 60, 163);
+    --secondary-light: rgb(169, 84, 221);
+    --secondary-dark: rgb(72, 43, 115);
+    --error-main: rgb(193, 55, 55);
+    --error-light: rgb(239, 78, 78);
+    --error-dark: rgb(119, 27, 27);
 }
 
 *,

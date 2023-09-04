@@ -12,6 +12,20 @@
     background-color: rgba(0, 0, 0, 0.05);
 }
 
+.bulletPoint p:hover {
+    cursor: text;
+}
+
 .bulletPoint input {
+    flex: 1 1 auto;
+}
+
+.dataEntryNavigationButtonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+}
+
+.dataEntryNavigationButtonGroup>* {
     flex: 1 1 auto;
 }

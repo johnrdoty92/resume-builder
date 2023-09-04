@@ -3,3 +3,17 @@
     flex-direction: column;
     gap: 1.75rem;
 }
+
+.addEntryGroup {
+    display: flex;
+    align-items: end;
+    gap: 0.5em;
+}
+
+.addEntryGroup>label {
+    flex: 1 1 auto;
+}
+
+.addEntryGroup>button {
+    padding-block: 13.33px;
+}

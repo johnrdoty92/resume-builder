@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import classes from "./BulletPoints.module.css";
+import classes from "../EditorModal/EditorModal.module.css";
 
 type BulletPointEditorProps = {
   value: string;
@@ -64,7 +64,7 @@ export const BulletPointEditor = ({ value, index, handleUpdate }: BulletPointEdi
       <Button type="button" onClick={handleClick}>
         Edit
       </Button>
-      <Button type="button" onClick={() => handleUpdate(index)}>
+      <Button color="error" type="button" onClick={() => handleUpdate(index)}>
         Delete
       </Button>
     </div>

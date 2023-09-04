@@ -1,5 +1,6 @@
 import { Button } from "components/Button/Button";
 import { useEditorModalDispatch, useEditorModalState, useResumeState } from "contexts/hooks";
+import classes from "./EditorModal.module.css";
 
 export const DataEntryNavigatorButtons = () => {
   const { changeEntryIndex } = useEditorModalDispatch();
@@ -12,7 +13,7 @@ export const DataEntryNavigatorButtons = () => {
   const handlePrevEntry = () => changeEntryIndex((i) => i - 1);
 
   return (
-    <div>
+    <div className={classes.dataEntryNavigationButtonGroup}>
       <Button disabled={isFirstPage} onClick={handlePrevEntry}>
         Previous
       </Button>

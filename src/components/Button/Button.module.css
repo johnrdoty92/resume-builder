@@ -3,20 +3,53 @@
     border: none;
     border-radius: 5px;
     color: white;
-    background-color: var(--primary-main);
     transition: all 250ms ease;
     box-shadow: inset -2px -2px 4px rgba(43, 21, 105, 0.2);
 }
 
+.primary {
+    background-color: var(--primary-main);
+}
+
+.primary:hover {
+    background-color: var(--primary-light);
+}
+
+.primary:active {
+    background-color: var(--primary-dark);
+}
+
+.secondary {
+    background-color: var(--secondary-main);
+}
+
+.secondary:hover {
+    background-color: var(--secondary-light);
+}
+
+.secondary:active {
+    background-color: var(--secondary-dark);
+}
+
+.error {
+    background-color: var(--error-main);
+}
+
+.error:hover {
+    background-color: var(--error-light);
+}
+
+.error:active {
+    background-color: var(--error-dark);
+}
+
 .button:hover {
     transition: all 250ms ease;
-    background-color: var(--primary-light);
     cursor: pointer;
 }
 
 .button:active {
     transition: none;
-    background-color: var(--primary-dark);
 }
 
 .button:disabled {

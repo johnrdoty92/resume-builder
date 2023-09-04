@@ -15,12 +15,14 @@ import { DataEntryNavigatorButtons } from "../DataEntryNavigatorButtons";
 import classes from "./Editor.module.css";
 
 type ResponsibilitiesProps = {
+  header?: React.ReactNode;
   responsibilities: string[];
   addResponsibility: (value: string) => void;
   updateResponsibility: (index: number, value?: string) => void;
 };
 
 const Responsibilities = ({
+  header,
   responsibilities,
   addResponsibility,
   updateResponsibility,
@@ -40,6 +42,16 @@ const Responsibilities = ({
 
   return (
     <>
+      <div className={classes.addEntryGroup}>
+        <Input
+          label="Add Accomplishment"
+          value={currentResponsibility}
+          onChange={(e) => setCurrentResponsiblity(e.target.value)}
+          onKeyDown={handleEnter}
+        />
+        <Button onClick={handleSaveCurrent}>Add</Button>
+      </div>
+      {header}
       {responsibilities.map((acc, i) => {
         return (
           <BulletPointEditor
@@ -50,12 +62,6 @@ const Responsibilities = ({
           />
         );
       })}
-      <Input
-        value={currentResponsibility}
-        onChange={(e) => setCurrentResponsiblity(e.target.value)}
-        onKeyDown={handleEnter}
-      />
-      <Button onClick={handleSaveCurrent}>Add Accomplishment</Button>
     </>
   );
 };
@@ -128,6 +134,7 @@ export const WorkExperienceEditor = () => {
       <DatePicker label="Start" selected={dates.start} onChange={handleDateChange("start")} />
       <DatePicker label="End" selected={dates.end} onChange={handleDateChange("end")} />
       <Responsibilities
+        header={<h5>Accomplishments</h5>}
         addResponsibility={addResponsibility}
         responsibilities={responsibilities}
         updateResponsibility={handleUpdateResponsibility}
