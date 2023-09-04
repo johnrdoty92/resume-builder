@@ -1,8 +1,10 @@
 import { ReactComponent as CloseIcon } from "assets/icons/close.svg";
 import { Button } from "components/Button/Button";
 import { Chip } from "components/Button/Chip";
+import { Input } from "components/Input";
 import { useResumeDispatch, useResumeState } from "contexts/hooks";
 import { KeyboardEventHandler, useState } from "react";
+import classes from "./Editor.module.css";
 
 const SkillChip = ({ skill, index }: { skill: string; index: number }) => {
   const { removeDataEntry } = useResumeDispatch();
@@ -37,20 +39,26 @@ export const SkillsEditor = () => {
   };
 
   return (
-    <>
-      <div style={{ display: "flex", gap: "0.5em" }}>
-        {skills.map((skill, i) => (
-          <SkillChip key={`${skill}${i}`} index={i} skill={skill} />
-        ))}
+    <div className={classes.editorInputs}>
+      <div className={classes.addEntryGroup}>
+        <Input
+          label="Add Skill"
+          value={currentValue}
+          onChange={(e) => setCurrentValue(e.target.value)}
+          onKeyDown={handleEnterKey}
+        />
+        <Button type="button" disabled={!currentValue} onClick={saveCurrentSkill}>
+          Add
+        </Button>
       </div>
-      <input
-        value={currentValue}
-        onChange={(e) => setCurrentValue(e.target.value)}
-        onKeyDown={handleEnterKey}
-      />
-      <Button type="button" disabled={!currentValue} onClick={saveCurrentSkill}>
-        Add Skill
-      </Button>
-    </>
+      <div>
+        <h5 className={classes.header}>Skills</h5>
+        <div className={classes.chipList}>
+          {skills.map((skill, i) => (
+            <SkillChip key={`${skill}${i}`} index={i} skill={skill} />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };

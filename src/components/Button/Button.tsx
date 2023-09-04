@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { ComponentProps } from "react";
 import classes from "./Button.module.css";
 
-type ButtonProps = {
+export type ButtonProps = {
   color?: "primary" | "secondary" | "error";
 } & ComponentProps<"button">;
 

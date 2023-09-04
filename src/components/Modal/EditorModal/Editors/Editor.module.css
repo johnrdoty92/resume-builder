@@ -17,3 +17,12 @@
 .addEntryGroup>button {
     padding-block: 13.33px;
 }
+
+.chipList {
+    display: flex;
+    gap: 0.5em;
+}
+
+.header {
+    margin-bottom: 0.5rem;
+}

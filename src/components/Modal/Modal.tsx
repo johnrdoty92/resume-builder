@@ -10,21 +10,23 @@ type ModalProps = {
 
 export const Modal = ({ open, children, setOpen, onClose }: ModalProps) => {
   const transitions = useTransition([open], {
-    from: { opacity: 0, translateY: 50, blur: 0 },
-    enter: { opacity: 1, translateY: 0, blur: 8 },
-    leave: { opacity: 0, translateY: 50, blur: 0 },
+    from: { opacity: 0, translateY: 50, blur: 0, pointerEvents: "initial" } as const,
+    enter: { opacity: 1, translateY: 0, blur: 8, pointerEvents: "initial" },
+    leave: { opacity: 0, translateY: 50, blur: 0, pointerEvents: "none" },
     onRest: () => onClose?.(),
-    config: config.gentle,
+    immediate: (key) => key === "pointerEvents",
+    config: config.stiff,
   });
 
   return (
     <>
       {transitions(
-        ({ opacity, translateY, blur }, isOpen) =>
+        ({ opacity, translateY, blur, pointerEvents }, isOpen) =>
           isOpen && (
             <animated.div
               style={{
                 opacity,
+                pointerEvents,
                 backdropFilter: blur.to((v) => `blur(${v}px)`),
                 WebkitBackdropFilter: blur.to((v) => `blur(${v}px)`),
               }}
